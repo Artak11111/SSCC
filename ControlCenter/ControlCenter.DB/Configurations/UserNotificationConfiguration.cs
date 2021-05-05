@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControlCenter.DB.Configurations
 {
-    public class UserNotificationConfiguration: IEntityTypeConfiguration<UserNotification>
+    public class UserNotificationConfiguration : IEntityTypeConfiguration<UserNotification>
     {
         public void Configure(EntityTypeBuilder<UserNotification> builder)
         {

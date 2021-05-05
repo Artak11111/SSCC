@@ -13,13 +13,13 @@ namespace ControlCenter.Client.ViewModels
 
         private readonly AccountManager accountManager;
         private readonly UserSession.UserSession userSession;
-        private readonly INavigationManager navgiationManager;
+        private readonly NavigationManager navgiationManager;
 
         #endregion Fields
 
         #region Constructor
 
-        public ChangePasswordViewModel(UserSession.UserSession userSession, AccountManager accountManager, INavigationManager navgiationManager)
+        public ChangePasswordViewModel(UserSession.UserSession userSession, AccountManager accountManager, NavigationManager navgiationManager)
         {
             this.userSession = userSession;
             this.accountManager = accountManager;

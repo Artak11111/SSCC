@@ -4,40 +4,167 @@
              xmlns:i="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:cc="clr-namespace:ControlCenter.Client.Controls"
+             DataContext="{Binding DashboardViewModel, Source={StaticResource ViewModelLocator}}"
              xmlns:local="clr-namespace:ControlCenter.Client.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Solar System"
+        <Border Background="White" Margin="0 0 0 8" Name="header">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Direction="-90"
+                              RenderingBias="Quality" ShadowDepth="1.5" Color="#e0e0e0"/>
+            </Border.Effect>
+
+            <Grid>
+                <TextBlock Text="Control Center"
                    VerticalAlignment="Center"
                    Margin="10"
                    FontSize="25"/>
 
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10">
-            <TextBlock Text="{Binding UserName}"
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10">
+                    <TextBlock Text="{Binding UserName}"
                        VerticalAlignment="Center"
                        FontSize="25"/>
 
-            <Border x:Name="accountButton" Background="White" CornerRadius="50" Padding="5">
-                <Button BorderBrush="Transparent"
-                        Background="Transparent">
-                    <i:PackIconMaterial Kind="Account" Width="22" Height="22"/>
-                </Button>
-            </Border>
+                     <Button BorderBrush="Transparent"
+                             Background="Transparent"
+                             Margin="10 5"
+                             Command="{Binding OpenUserInfoPopupCommand}">
+                         <i:PackIconMaterial Kind="Account" Width="22" Height="22"/>
+                     </Button>
 
-            <Popup Width="100"
-                   Height="300"
-                   IsOpen="True"
-                   Placement="Bottom">
-                <Grid Background="White">
-                    <TextBlock Text="AAAAAAAAA"/>
-                </Grid>
-            </Popup>
-        </StackPanel>
+                    <Popup Width="300"
+                           Height="170"
+                           IsOpen="{Binding IsUserInfoPopupOpen, Mode=TwoWay}"
+                           VerticalOffset="11"
+                           HorizontalOffset="-185"
+                           StaysOpen="False"
+                           AllowsTransparency="True">
+                        <Border Background="White" Margin="10">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" Direction="-90" RenderingBias="Quality" ShadowDepth="1.5" Color="#e0e0e0"/>
+                            </Border.Effect>
+                            <Grid Background="White" Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="{Binding Email}" 
+                                       HorizontalAlignment="Left"
+                                       Margin="10"
+                                       FontSize="15" />
+
+                                <StackPanel Grid.Row="1"
+                                        Margin="10"
+                                        Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <i:PackIconModern Kind="PeopleMultiple" Foreground="Orange" 
+                                          Margin="0 0 5 0"
+                                          Height="20" Width="20"/>
+                                    <TextBlock Text="{Binding DepartmentName}" FontSize="15" />
+                                </StackPanel>
+
+                                <Button Grid.Row="2"
+                                    Margin="10"
+                                    Content="Log Out"
+                                    Command="{Binding LogOutCommand}"/>
+                            </Grid>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <WrapPanel Margin="10">
+                <c:Tile Title="Notifications"
+                        ToolTip="View all notifications"
+                        Width="200"
+                        Margin="10"
+                        c:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="orange"
+                        HorizontalTitleAlignment="Right">    
+                    <i:PackIconModern Width="40"
+                              Height="40"
+                              Kind="Email" />
+                </c:Tile>
+
+                <Border Width="30" Height="30"
+                        CornerRadius="50"
+                        Background="Red"
+                        Margin="-30 2 0 0"
+                        VerticalAlignment="Top"
+                        Visibility="{Binding HasNewNotifications, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="{Binding NewNotificationsCount}" 
+                               FontSize="14"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <c:Tile Title="Create"
+                        Command="{Binding NavigateToNotificationCreationCommand}"
+                        ToolTip="Create new notification"
+                        Width="200"
+                        Margin="10"
+                        c:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="LightPink"
+                        HorizontalTitleAlignment="Right">
+                    <i:PackIconModern Width="40"
+                              Height="40"
+                              Kind="DrawPencil" />
+                </c:Tile>
+
+                <c:Tile Title="Organization"
+                        ToolTip="View and edit organization structure"
+                        Margin="10"
+                        Width="150"
+                        Visibility="{Binding IsManager, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        c:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="LightGreen"
+                        HorizontalTitleAlignment="Right">
+                    <i:PackIconMaterial Width="40"
+                              Height="40"
+                              Kind="OfficeBuildingOutline" />
+                </c:Tile>
+
+                <c:Tile Title="Settings"
+                        ToolTip="Notification settings"
+                        Margin="10"
+                        Width="150"
+                        c:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="LightGray"
+                        HorizontalTitleAlignment="Right">
+                    <i:PackIconModern Width="40"
+                              Height="40"
+                              Kind="Settings" />
+                </c:Tile>
+            </WrapPanel>
+        </Grid>
+
+        <Button Grid.Row="2"
+                Visibility="{Binding CanNavigateBack, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding NavigateBackCommand}"
+                Panel.ZIndex="2"
+                ToolTip="Go back"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Padding="10 5"
+                Margin="20">
+            <i:PackIconModern Kind="ArrowLeft"/>
+        </Button>
+
+        <cc:ActionableContentPresenter x:Name="dashboardContent"
+                                       Panel.ZIndex="1"
+                                       Grid.Row="2"
+                                       Margin="20"/>
     </Grid>
 </UserControl>

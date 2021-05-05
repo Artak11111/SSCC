@@ -13,13 +13,13 @@ namespace ControlCenter.Client.ViewModels
         #region Fields
 
         private readonly AccountManager accountManager;
-        private readonly INavigationManager navgiationManager;
+        private readonly NavigationManager navgiationManager;
 
         #endregion Fields
 
         #region Constructor
 
-        public SignUpViewModel(AccountManager accountManager, INavigationManager navgiationManager)
+        public SignUpViewModel(AccountManager accountManager, NavigationManager navgiationManager)
         {
             this.accountManager = accountManager;
             this.navgiationManager = navgiationManager;

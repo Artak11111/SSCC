@@ -33,8 +33,7 @@ namespace ControlCenter.Client
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterInstance(new NavigationManager())
-                .As<INavigationManager>();
+            builder.RegisterInstance(new NavigationManager());
 
             builder.RegisterType<ApiClient>()
                 .SingleInstance();

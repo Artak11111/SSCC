@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ControlCenter.Entities
 {
@@ -17,5 +13,9 @@ namespace ControlCenter.Entities
         public Notification Notification { get; set; }
 
         public bool IsNew { get; set; } = true;
+        
+        public string Message { get; set; }
+
+        public DateTimeOffset DateTime { get; set; }
     }
 }

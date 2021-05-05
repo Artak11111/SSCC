@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace ControlCenter.Client.Navigation
 {
-    public class NavigationManager : INavigationManager
+    public class NavigationManager
     {
         #region Fields
 
@@ -75,7 +75,21 @@ namespace ControlCenter.Client.Navigation
 
             navigationHistory[regionName].Remove(navigationHistory[regionName].Last());
 
-            regions[regionName].Content = navigationHistory[regionName].Last();
+            regions[regionName].Content = navigationHistory[regionName].LastOrDefault();
+
+            return true;
+        }
+
+        public bool CanNavigateBack(string regionName = "MainRegion")
+        {
+            if (string.IsNullOrEmpty(regionName))
+                throw new ArgumentNullException(nameof(regionName));
+
+            if (!regions.ContainsKey(regionName))
+                return false;
+
+            if (navigationHistory[regionName].Count < 1)
+                return false;
 
             return true;
         }

@@ -9,11 +9,17 @@ namespace ControlCenter.Client.Commands
     {
         public event EventHandler CanExecuteChanged;
 
-        private Func<Task> execute;
+        private readonly Func<Task> executeAsync;
+        private readonly Action execute;
 
-        public Command(Func<Task> execute)
+        public Command(Func<Task> executeAsync)
         {
-            this.execute = execute;
+            this.executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+        }
+
+        public Command(Action execute)
+        {
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
         }
 
         public bool CanExecute(object parameter)
@@ -25,8 +31,10 @@ namespace ControlCenter.Client.Commands
         {
             try
             {
-                await execute();
-                    
+                if (execute != null)
+                    execute();
+                else if (executeAsync != null)
+                    await executeAsync();
             }
             catch
             {

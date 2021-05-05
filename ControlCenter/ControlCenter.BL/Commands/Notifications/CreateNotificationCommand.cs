@@ -2,7 +2,6 @@
 using ControlCenter.BL.Commands.Notifications.Models;
 using ControlCenter.BL.Exceptions;
 using ControlCenter.Entities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace ControlCenter.BL.Commands.Notifications
 
         private readonly IRepository<Department> departamentRepository;
         private readonly IRepository<Notification> notificationRepository;
-        private readonly IRepository<UserNotification> userNotificationRepository;
+        private readonly IRepository<DepartmentNotification> departmentNotificationRepository;
         private readonly IRepository<User> userRepository;
         private readonly IUserInfoProvider userInfoProvider;
 
@@ -22,11 +21,11 @@ namespace ControlCenter.BL.Commands.Notifications
 
         #region Constructor
 
-        public CreateNotificationCommand(IRepository<Department> departamentRepository, IRepository<Notification> notificationRepository, IRepository<User> userRepository, IUserInfoProvider userInfoProvider, IRepository<UserNotification> userNotificationRepository)
+        public CreateNotificationCommand(IRepository<Department> departamentRepository, IRepository<Notification> notificationRepository, IRepository<User> userRepository, IUserInfoProvider userInfoProvider, IRepository<DepartmentNotification> departmentNotificationRepository)
         {
             this.notificationRepository = notificationRepository;
             this.userRepository = userRepository;
-            this.userNotificationRepository = userNotificationRepository;
+            this.departmentNotificationRepository = departmentNotificationRepository;
             this.departamentRepository = departamentRepository;
             this.userInfoProvider = userInfoProvider;
         }
@@ -45,34 +44,23 @@ namespace ControlCenter.BL.Commands.Notifications
             {
                 Id = new Guid(),
                 Message = input.Message,
-                DateTime = input.DateTime.ToUniversalTime(),
+                NextScheduledNotificatinoDateTime = input.DateTime.ToUniversalTime(),
                 IsForEveryOne = input.IsForEveryOne,
+                TargetUserId = input.TargetUserId,
                 DepartmentId = userInfoProvider.CurrentDepartmentId,
                 Repeat = input.Repeat
             };
 
-            // depending on target, create relations
-            if (input.TargetUserId != null)
-            {
-                userNotificationRepository.Add(new UserNotification
-                {
-                    Id = new Guid(),
-                    UserId = input.TargetUserId.Value,
-                    NotificationId = notification.Id
-                });
-            }
-            else
-            {
-                var targetUsers = await userRepository.Where(u => input.TargetDepartments.Contains(u.DepartmentId)).ToListAsync();
-                userNotificationRepository.Add(new UserNotification
-                {
-                    Id = new Guid(),
-                    UserId = input.TargetUserId.Value,
-                    NotificationId = notification.Id
-                });
-            }
-
             notificationRepository.Add(notification);
+
+            foreach (var departmentId in input.TargetDepartments)
+            {
+                departmentNotificationRepository.Add(new DepartmentNotification
+                {
+                    DepartmentId = departmentId,
+                    NotificationId = notification.Id
+                });
+            }
 
             await notificationRepository.SaveChangesAsync();
         }

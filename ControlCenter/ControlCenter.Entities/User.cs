@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ControlCenter.Entities
 {
-    public class User : EntityBase
+    public class User : EntityWithId
     {
         public DateTime Birthday { get; set; }
         

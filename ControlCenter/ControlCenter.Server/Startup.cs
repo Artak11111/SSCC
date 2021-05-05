@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ControlCenter.Server.Jobs;
+using System.Threading.Tasks;
 
 namespace ControlCenter.Server
 {
@@ -51,11 +53,15 @@ namespace ControlCenter.Server
 
             // adding db context 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+                options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]),
+                ServiceLifetime.Transient);
+
 
             // adding scoped services
+            services.AddScoped<NotificationSenderJob>();
             services.AddScoped<TaskExecutor.TaskExecutor>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
+            services.AddSingleton<IJobManager, JobManager>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddControllers();
@@ -71,7 +77,20 @@ namespace ControlCenter.Server
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
 
-            return new AutofacServiceProvider(ApplicationContainer);
+            var serviceProvider = new AutofacServiceProvider(ApplicationContainer);
+
+            //register application jobs
+            ConfigureApplicationJobs(serviceProvider);
+
+            return serviceProvider;
+        }
+
+        private void ConfigureApplicationJobs(IServiceProvider serviceProvider)
+        {
+            var jobManager = serviceProvider.GetService<IJobManager>();
+            var notificationSenderJob = serviceProvider.GetService<NotificationSenderJob>();
+
+            jobManager.CreateJob(NotificationSenderJob.Key, 10, notificationSenderJob.Execute);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -31,7 +31,7 @@ namespace ControlCenter.BL.Queries.Notifications
 
         #region Methods
 
-        public async Task<List<Notification>> Execute()
+        public async Task<List<UserNotification>> Execute()
         {
             // validations
             await ValidateInput();
@@ -39,7 +39,6 @@ namespace ControlCenter.BL.Queries.Notifications
             return await userNotificationRepository
                 .Include(un => un.Notification.Department)
                 .Where(un => un.UserId == userInfoProvider.CurrentUserId && un.IsNew)
-                .Select(un => un.Notification)
                 .OrderByDescending(n => n.DateTime)
                 .AsNoTracking()
                 .ToListAsync();

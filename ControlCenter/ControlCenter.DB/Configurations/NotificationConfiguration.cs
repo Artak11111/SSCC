@@ -11,6 +11,10 @@ namespace ControlCenter.DB.Configurations
             builder.HasKey(i => i.Id);
 
             builder.HasOne(n => n.Department);
+
+            builder.HasMany(n => n.TargetDepartments)
+                .WithOne(tg => tg.Notification)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

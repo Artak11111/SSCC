@@ -2,7 +2,7 @@
 
 namespace ControlCenter.Entities
 {
-    public class Department : EntityBase
+    public class Department : EntityWithId
     {
         public string Name { get; set; }
 

@@ -17,7 +17,7 @@ namespace ControlCenter.Client
 
         private void Shell_Initialized(object sender, System.EventArgs e)
         {
-            var navigationManager = ServiceLocators.ServiceLocator.Container.Resolve<INavigationManager>();
+            var navigationManager = ServiceLocators.ServiceLocator.Container.Resolve<NavigationManager>();
             navigationManager.RegisterRegion(RegionNames.Main, content);
 
             navigationManager.RequestNavigate<SignIn>(RegionNames.Main);

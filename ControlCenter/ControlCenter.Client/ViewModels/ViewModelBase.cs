@@ -84,7 +84,7 @@ namespace ControlCenter.Client.ViewModels
             }
         }
 
-        private void OnPropertyChanged(string propertyName = null)
+        protected void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Autofac;
+using ControlCenter.Client.Navigation;
+using ControlCenter.Client.Regions;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ControlCenter.Client.Views
 {
-    /// <summary>
-    /// Interaction logic for Dashboard.xaml
-    /// </summary>
     public partial class Dashboard : UserControl
     {
         public Dashboard()
         {
             InitializeComponent();
+
+            Loaded += Dashboard_Initialized;
+        }
+
+        private void Dashboard_Initialized(object sender, System.EventArgs e)
+        {
+            var navigationManager = ServiceLocators.ServiceLocator.Container.Resolve<NavigationManager>();
+            navigationManager.RegisterRegion(RegionNames.Dashboard, dashboardContent);
         }
     }
 }
