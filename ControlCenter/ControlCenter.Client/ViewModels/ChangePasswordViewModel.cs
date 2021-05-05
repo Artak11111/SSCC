@@ -2,60 +2,65 @@
 using System.Windows.Input;
 using ControlCenter.Client.Commands;
 using ControlCenter.Client.Navigation;
-using ControlCenter.Client.Regions;
 using ControlCenter.Client.Views;
 using System.Threading.Tasks;
 
 namespace ControlCenter.Client.ViewModels
 {
-    public class SignUpViewModel : ViewModelBase
+    public class ChangePasswordViewModel : ViewModelBase
     {
         #region Fields
 
         private readonly AccountManager accountManager;
+        private readonly UserSession.UserSession userSession;
         private readonly INavigationManager navgiationManager;
 
         #endregion Fields
 
         #region Constructor
 
-        public SignUpViewModel(AccountManager accountManager, INavigationManager navgiationManager)
+        public ChangePasswordViewModel(UserSession.UserSession userSession, AccountManager accountManager, INavigationManager navgiationManager)
         {
+            this.userSession = userSession;
             this.accountManager = accountManager;
             this.navgiationManager = navgiationManager;
 
-            AddPropertyDependencies(nameof(CanSignUp), nameof(Email));
+            AddPropertyDependencies(nameof(CanChangePassword), nameof(Password));
         }
 
         #endregion Constructor
 
         #region Properties
 
-        private string email;
-        public string Email
+        private string password;
+        public string Password
         {
-            get => email;
-            set => Set(ref email, value);
+            get => password;
+            set => Set(ref password, value);
         }
 
-        public bool CanSignUp => !string.IsNullOrEmpty(Email);
+        public string DepartmentName => userSession.DepartmentName;
+
+        public string UserName => userSession.Name;
+             
+        public bool CanChangePassword => !string.IsNullOrEmpty(Password);
 
         #endregion Properties
 
         #region Commands
 
-        public ICommand SignUpCommand => new Command(async () =>
+        public ICommand ChangePasswordCommand => new Command(async () =>
         {
             IsBusy = true;
-            var result = await accountManager.SignIn(Email, null);
 
-            if(result)
-                navgiationManager.RequestNavigate<ChangePassword>(RegionNames.Main);
-            else
-                navgiationManager.RequestNavigate<SignIn>(RegionNames.Main);
+            var result = await accountManager.ChangePassword(null, Password);
+
+            if (result)
+                navgiationManager.RequestNavigate<Dashboard>();
 
             IsBusy = false;
         });
+
 
         public ICommand CancelCommand => new Command(() =>
         {

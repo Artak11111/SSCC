@@ -48,7 +48,7 @@ namespace ControlCenter.BL.Commands.Users
 
             return new AuthenticateUserResult
             {
-                UserId =user.Id,
+                UserId = user.Id,
                 Name = user.Name,
                 Email = user.Email,
                 DepartmentId = user.DepartmentId,

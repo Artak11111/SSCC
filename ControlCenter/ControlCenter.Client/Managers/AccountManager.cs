@@ -61,7 +61,7 @@ namespace ControlCenter.Client.Managers
             userSession.EndSession();
         }
 
-        public async Task ChangePassword(string oldPassword, string newPassword)
+        public async Task<bool> ChangePassword(string oldPassword, string newPassword)
         {
             var oldPasswordHash = string.IsNullOrEmpty(oldPassword) ? string.Empty : Cryptography.GetPasswordHash(oldPassword);
             var response = await client.SendAsync(HttpMethod.Post, $"{ChangePasswordUrl}?oldasswordHash={oldPasswordHash}&newPasswordHash={Cryptography.GetPasswordHash(newPassword)}");
@@ -69,17 +69,24 @@ namespace ControlCenter.Client.Managers
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
                 notificationService.ShowError(response.ErrorMessage);
+
+                return false;
             }
+
+            return true;
         }
 
-        public async Task ChangeDepartment(Guid userId, Guid newDepartmentId)
+        public async Task<bool> ChangeDepartment(Guid userId, Guid newDepartmentId)
         {
             var response = await client.SendAsync(HttpMethod.Post, $"{ChangeDepartmentUrl}?userId={userSession.UserId}&newDepartmentId={newDepartmentId}");
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
                 notificationService.ShowError(response.ErrorMessage);
+                return false;
             }
+
+            return true;
         }
 
         #endregion Methods

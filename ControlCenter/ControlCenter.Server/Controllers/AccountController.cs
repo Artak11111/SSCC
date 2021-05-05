@@ -76,11 +76,11 @@ namespace ControlCenter.Server.Controllers
         [HttpPost]
         [Route("ChangePassword")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(Guid userId, string oldPasswordHash, string newPasswordHash)
+        public async Task<IActionResult> ChangePassword(string oldPasswordHash, string newPasswordHash)
         {
             var result = await taskExecutor.Execute(async () =>
             {
-                await changePasswordCommand.Execute(userId, oldPasswordHash, newPasswordHash);
+                await changePasswordCommand.Execute(oldPasswordHash, newPasswordHash);
             });
 
             if (result.ErrorMessage == null)

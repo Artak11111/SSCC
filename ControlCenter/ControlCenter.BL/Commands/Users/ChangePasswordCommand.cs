@@ -12,43 +12,44 @@ namespace ControlCenter.BL.Commands.Users
         #region Fields
 
         private readonly IRepository<User> userRepository;
+        private readonly IUserInfoProvider userInfoProvider;
 
         #endregion Fields
 
         #region Constructor
 
-        public ChangePasswordCommand(IRepository<User> userRepository)
+        public ChangePasswordCommand(IRepository<User> userRepository, IUserInfoProvider userInfoProvider)
         {
             this.userRepository = userRepository;
+            this.userInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
         #region Methods
 
-        public async Task Execute(Guid id, string oldPasswordHash, string newPasswordHash)
+        public async Task Execute(string oldPasswordHash, string newPasswordHash)
         {
             // validations
-            await ValidateInput(id, oldPasswordHash, newPasswordHash);
+            await ValidateInput(oldPasswordHash, newPasswordHash);
 
             var user = await userRepository
                 .Include(u => u.Department)
-                .FirstOrDefaultAsync(u => u.Id == id && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash));
+                .FirstOrDefaultAsync(u => u.Id == userInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash));
 
             user.PasswordHash = newPasswordHash;
 
             await userRepository.SaveChangesAsync();
         }
 
-        private async Task ValidateInput(Guid id, string oldPasswordHash, string newPasswordHash)
+        private async Task ValidateInput(string oldPasswordHash, string newPasswordHash)
         {
-            if (id == default) throw new ArgumentNullException(nameof(id));
             if (string.IsNullOrEmpty(newPasswordHash)) throw new ArgumentNullException(nameof(newPasswordHash));
 
-            if (!await userRepository.AnyAsync(u => u.Id == id && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash)))
+            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash)))
             {
                 if (string.IsNullOrEmpty(oldPasswordHash))
-                    throw new BusinessException($"User with id {id} not found");
+                    throw new BusinessException($"User with not found");
                 else
                     throw new BusinessException("Invalid id or password");
             }

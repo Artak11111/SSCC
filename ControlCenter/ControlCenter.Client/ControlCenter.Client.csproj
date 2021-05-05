@@ -18,6 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Page Update="Views\ChangePassword.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      </Page>
       <Page Update="Views\SignUp.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       </Page>

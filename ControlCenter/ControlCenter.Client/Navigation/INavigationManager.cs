@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace ControlCenter.Client.Navigation
 {
@@ -11,7 +6,11 @@ namespace ControlCenter.Client.Navigation
     {
         void RegisterRegion(string name, ContentControl container);
 
-        void RequestNavigate<T>(string regionName)
+        void RemoveRegion(string regionName);
+
+        void RequestNavigate<T>(string regionName = "MainRegion")
             where T : new();
+
+        bool NavigateBack(string regionName = "MainRegion");
     }
 }

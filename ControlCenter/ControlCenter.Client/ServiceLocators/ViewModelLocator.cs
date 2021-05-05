@@ -9,6 +9,8 @@ namespace ControlCenter.Client.ServiceLocators
 
         public static SignUpViewModel SignUpViewModel => ServiceLocator.Container.Resolve<SignUpViewModel>();
 
+        public static ChangePasswordViewModel ChangePasswordViewModel => ServiceLocator.Container.Resolve<ChangePasswordViewModel>();
+
         public static DashboardViewModel DashboardViewModel => ServiceLocator.Container.Resolve<DashboardViewModel>();
     }
 }
