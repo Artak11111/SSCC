@@ -22,7 +22,7 @@ namespace ControlCenter.Server.Middlewares
             var departmentIdClaim = httpContext.User.Claims.FirstOrDefault(c => c.Type == "DepartmentId")?.Value;
 
             if (!string.IsNullOrEmpty(idClaim) && Guid.TryParse(idClaim, out var userId) &&
-                !string.IsNullOrEmpty(departmentIdClaim) && Guid.TryParse(idClaim, out var departmentId))
+                !string.IsNullOrEmpty(departmentIdClaim) && Guid.TryParse(departmentIdClaim, out var departmentId))
             {
                 userInfoProvider.SetUserInfo(userId, departmentId);
             }

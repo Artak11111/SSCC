@@ -104,7 +104,7 @@ namespace ControlCenter.Client.Client
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public void RemoveAuthentication()
+        public void ClearAuthentication()
         {
             httpClient.DefaultRequestHeaders.Authorization = null;
         }

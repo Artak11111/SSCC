@@ -39,18 +39,21 @@ namespace ControlCenter.Client.Managers
 
         #region Methods
 
-        public async Task SignIn(string email, string password)
+        public async Task<bool> SignIn(string email, string password)
         {
-            var response = await client.SendAsync<SignInResult>(HttpMethod.Post, $"{SignInUrl}?email={email}&passwordHash={Cryptography.GetPasswordHash(password)}");
+            var passwordHash = string.IsNullOrEmpty(password) ? string.Empty : Cryptography.GetPasswordHash(password);
+            var response = await client.SendAsync<SignInResult>(HttpMethod.Post, $"{SignInUrl}?email={email}&passwordHash={passwordHash}");
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
                 notificationService.ShowError(response.ErrorMessage);
-                return;
+                return false;
             }
 
             userSession.StartSession(response.Result);
             client.AddAuthentication(response.Result.Token);
+
+            return true;
         }
 
         public void SignOut()

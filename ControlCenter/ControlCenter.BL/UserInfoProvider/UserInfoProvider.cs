@@ -12,7 +12,7 @@ namespace ControlCenter.BL.UserInfoProvider
         public void SetUserInfo(Guid currentUserId, Guid currentDepartmentId)
         {
             CurrentDepartmentId = currentDepartmentId;
-            CurrentUserId = CurrentUserId;
+            CurrentUserId = currentUserId;
         }
     }
 }

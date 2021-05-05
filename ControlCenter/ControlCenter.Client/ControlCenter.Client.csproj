@@ -7,13 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="ServiceLocator\" />
+      <Folder Include="Sequrity\" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+      <PackageReference Include="MahApps.Metro" Version="2.4.5" />
+      <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\SignUp.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      </Page>
     </ItemGroup>
 
 </Project>

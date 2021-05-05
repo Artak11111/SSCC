@@ -8,13 +8,11 @@ namespace ControlCenter.Client.Views
         public SignIn()
         {
             InitializeComponent();
-
-            Initialized += SignIn_Initialized;
         }
 
-        private void SignIn_Initialized(object sender, System.EventArgs e)
+        private void PasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            DataContext = new SignInViewModel();
+            (DataContext as SignInViewModel).Password = (sender as PasswordBox).Password;
         }
     }
 }

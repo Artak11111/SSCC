@@ -4,11 +4,10 @@ using ControlCenter.Client.Commands;
 using ControlCenter.Client.Navigation;
 using ControlCenter.Client.Regions;
 using ControlCenter.Client.Views;
-using System.Threading.Tasks;
 
 namespace ControlCenter.Client.ViewModels
 {
-    public class SignInViewModel : ViewModelBase
+    public class SignUpViewModel : ViewModelBase
     {
         #region Fields
 
@@ -19,12 +18,12 @@ namespace ControlCenter.Client.ViewModels
 
         #region Constructor
 
-        public SignInViewModel(AccountManager accountManager, INavigationManager navgiationManager)
+        public SignUpViewModel(AccountManager accountManager, INavigationManager navgiationManager)
         {
             this.accountManager = accountManager;
             this.navgiationManager = navgiationManager;
 
-            AddPropertyDependencies(nameof(CanSignIn), nameof(Email), nameof(Password));
+            AddPropertyDependencies(nameof(CanSignUp), nameof(Email));
         }
 
         #endregion Constructor
@@ -38,37 +37,23 @@ namespace ControlCenter.Client.ViewModels
             set => Set(ref email, value);
         }
 
-        private string password;
-        public string Password
-        {
-            get => password;
-            set => Set(ref password, value);
-        }
-
-        public bool CanSignIn => !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Email);
+        public bool CanSignUp => !string.IsNullOrEmpty(Email);
 
         #endregion Properties
 
         #region Commands
 
-        public ICommand SignInCommand => new Command(async () =>
+        public ICommand SignUpCommand => new Command(async () =>
         {
             IsBusy = true;
+            var result = await accountManager.SignIn(Email, null);
 
-            var result = await accountManager.SignIn(Email, Password);
-
-            if (!result) return;
-
-            navgiationManager.RequestNavigate<Dashboard>(RegionNames.Main);
+            if(result)
+                navgiationManager.RequestNavigate<Dashboard>(RegionNames.Main);
+            else
+                navgiationManager.RequestNavigate<SignIn>(RegionNames.Main);
 
             IsBusy = false;
-        });
-
-        public ICommand SignUpCommand => new Command(() =>
-        {
-            navgiationManager.RequestNavigate<SignUp>(RegionNames.Main);
-
-            return Task.CompletedTask;
         });
 
         #endregion Commands

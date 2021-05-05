@@ -61,13 +61,13 @@ namespace ControlCenter.BL.Commands.Users
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
-            if (!await userRepository.AnyAsync(u => u.Email == email && (u.PasswordHash == null || u.PasswordHash == passwordHash)))
-            {
-                if (string.IsNullOrEmpty(passwordHash))
-                    throw new BusinessException($"User with email {email} not found");
-                else
-                    throw new BusinessException("Invalid email or password");
-            }
+            var user = await userRepository.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                throw new BusinessException($"User with email {email} not found");
+
+            if (user.PasswordHash != null && user.PasswordHash != passwordHash)
+               throw new BusinessException("Invalid email or password");
         }
 
         #endregion Methods

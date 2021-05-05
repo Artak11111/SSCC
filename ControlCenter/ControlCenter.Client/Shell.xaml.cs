@@ -1,11 +1,12 @@
-﻿using ControlCenter.Client.Navigation;
+﻿using Autofac;
+using ControlCenter.Client.Navigation;
 using ControlCenter.Client.Regions;
 using ControlCenter.Client.Views;
 using System.Windows;
 
 namespace ControlCenter.Client
 {
-    public partial class Shell : Window
+    public partial class Shell
     {
         public Shell()
         {
@@ -16,13 +17,20 @@ namespace ControlCenter.Client
 
         private void Shell_Initialized(object sender, System.EventArgs e)
         {
-            var navigationManager = new NavigationManager();
+            var navigationManager = ServiceLocators.ServiceLocator.Container.Resolve<INavigationManager>();
             navigationManager.RegisterRegion(RegionNames.Main, content);
 
-            Dispatcher.Invoke(() => 
+            navigationManager.RequestNavigate<SignIn>(RegionNames.Main);
+        }
+
+        private void content_ContentChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            DataContext = (content.Content as FrameworkElement)?.DataContext;
+
+            content.ContentChanged += (s, args) =>
             {
-                navigationManager.RequestNavigate<SignIn>(RegionNames.Main);
-            });
+                DataContext = (content.Content as FrameworkElement)?.DataContext;
+            };
         }
     }
 }

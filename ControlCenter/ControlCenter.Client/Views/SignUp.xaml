@@ -1,7 +1,7 @@
-﻿<UserControl x:Class="ControlCenter.Client.Views.SignIn"
+﻿<UserControl x:Class="ControlCenter.Client.Views.SignUp"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             DataContext="{Binding SignInViewModel,Source={StaticResource ViewModelLocator}}">
+             DataContext="{Binding SignUpViewModel,Source={StaticResource ViewModelLocator}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -37,6 +37,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
@@ -46,36 +47,25 @@
                     <TextBlock Text="Solar System" FontSize="25"/>
                 </StackPanel>
 
-                <TextBlock Grid.Row="1"
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
+                           Text="To activate account enter your email"
+                           Foreground="Gray"
+                           FontSize="15"
+                           Style="{StaticResource TextBlockStyle}"
+                           Margin="20 0 20 5" />
+                
+                <TextBlock Grid.Row="2"
                            Text="Email"
                            Style="{StaticResource TextBlockStyle}"
                            Margin="20 0 5 0" />
-                <TextBox Grid.Row="1" Grid.Column="1" 
+                <TextBox Grid.Row="2" Grid.Column="1" 
                          Margin="5 5 20 5" 
                          Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="3"
-                           Margin="20 0 5 0"
-                           Text="Password"
-                           Style="{StaticResource TextBlockStyle}"/>
-                <PasswordBox Grid.Row="3" Grid.Column="1" 
-                         PasswordChanged="PasswordBox_PasswordChanged"
-                         Margin="5 5 20 5" />
-
                 <Button Grid.Row="5" Grid.ColumnSpan="2" 
-                        Margin="20 20 20 0" 
-                        Content="Sign In"
-                        IsEnabled="{Binding CanSignIn}"
-                        Command="{Binding SignInCommand}"/>
-                
-                <Button Grid.Row="6" Grid.ColumnSpan="2" 
-                        HorizontalAlignment="Right"
-                        BorderBrush="Transparent"
-                        Background="Transparent"
-                        FontSize="9"
-                        Padding="10 0"
-                        Margin="20 5 20 20" 
-                        Content="First time here ?"
+                        Margin="20" 
+                        Content="Activate"
+                        IsEnabled="{Binding CanSignUp}"
                         Command="{Binding SignUpCommand}"/>
             </Grid>
         </Border>

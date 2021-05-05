@@ -1,10 +1,9 @@
 ﻿using Autofac;
+using ControlCenter.Client.Client;
+using ControlCenter.Client.Helpers;
 using ControlCenter.Client.Navigation;
-using ControlCenter.Client.Regions;
-using System.Data;
+using ControlCenter.Client.ServiceLocators;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace ControlCenter.Client
 {
@@ -14,35 +13,69 @@ namespace ControlCenter.Client
 
         public App()
         {
-            Initialize();
-
-            var window = new Shell();
-            window.Show();
+            OperationsHelper.RunParallel(Initialize);
         }
 
         #endregion Constructor
-
-        #region Properties
-
-        public IContainer Container { get; set; }
-
-        #endregion Properties
 
         #region Methods
 
 
         #region Private Methods
 
-        private async void Initialize()
+        private void InitializeShell()
         {
-            Container = await Task.Run(() => 
+            var window = new Shell();
+            window.Show();
+        }
+
+        private void Initialize()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterInstance(new NavigationManager())
+                .As<INavigationManager>();
+
+            builder.RegisterType<ApiClient>()
+                .SingleInstance();
+
+            builder.RegisterType<UserSession.UserSession>()
+                .SingleInstance();
+
+            RegisterViewModels(builder);
+            RegisterManagers(builder);
+            RegisterServices(builder);
+
+            ServiceLocator.Initialize(builder.Build());
+
+            UIThreadHelper.AccessUIThread(InitializeShell);
+        }
+
+        private void RegisterServices(ContainerBuilder builder)
+        {
+            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Namespace == "ControlCenter.Client.Services" && t.Name.EndsWith("Service")))
             {
-                var builder = new ContainerBuilder();
+                builder.RegisterType(type)
+                    .SingleInstance();
+            }
+        }
 
-                builder.RegisterInstance<INavigationManager>(new NavigationManager());
+        private void RegisterManagers(ContainerBuilder builder)
+        {
+            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Namespace == "ControlCenter.Client.Managers" && t.Name.EndsWith("Manager")))
+            {
+                builder.RegisterType(type)
+                    .SingleInstance();
+            }
+        }
 
-                return builder.Build();
-            });
+        private void RegisterViewModels(ContainerBuilder builder)
+        {
+            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Namespace == "ControlCenter.Client.ViewModels" && t.Name.EndsWith("ViewModel")))
+            {
+                builder.RegisterType(type)
+                    .InstancePerDependency();
+            }
         }
 
         #endregion Private Methods
