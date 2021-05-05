@@ -30,9 +30,14 @@ namespace ControlCenter.Client.Client
 
         #region Methods
 
-        public async Task<RequestResult> SendAsync(HttpMethod method, string endpoint)
+        public async Task<RequestResult> SendAsync(HttpMethod method, string endpoint, object data = null)
         {
-            var result = await httpClient.SendAsync(new HttpRequestMessage(method, endpoint));
+            var requestMessage = new HttpRequestMessage(method, endpoint);
+
+            if (data != null)
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data));
+
+            var result = await httpClient.SendAsync(requestMessage);
 
             if(result.IsSuccessStatusCode)
             {
@@ -54,9 +59,14 @@ namespace ControlCenter.Client.Client
             }
         }
 
-        public async Task<RequestResult<T>> SendAsync<T>(HttpMethod method, string endpoint)
+        public async Task<RequestResult<T>> SendAsync<T>(HttpMethod method, string endpoint, object data = null)
         {
-            var result = await httpClient.SendAsync(new HttpRequestMessage(method, endpoint));
+            var requestMessage = new HttpRequestMessage(method, endpoint);
+
+            if (data != null)
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data));
+
+            var result = await httpClient.SendAsync(requestMessage);
 
             if (result.IsSuccessStatusCode)
             {

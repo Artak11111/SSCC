@@ -1,4 +1,5 @@
 ﻿using ControlCenter.Abstractions;
+using ControlCenter.BL.Commands.Users.Model;
 using ControlCenter.BL.Exceptions;
 using ControlCenter.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace ControlCenter.BL.Commands.Users
 
         #region Methods
 
-        public async Task<ClaimsIdentity> Execute(string email, string passwordHash)
+        public async Task<AuthenticateUserResult> Execute(string email, string passwordHash)
         {
             // validations
             await ValidateInput(email, passwordHash);
@@ -45,7 +46,15 @@ namespace ControlCenter.BL.Commands.Users
                 new Claim("DepartmentId", user.Department.Id.ToString()),
             };
 
-            return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            return new AuthenticateUserResult
+            {
+                UserId =user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                DepartmentId = user.DepartmentId,
+                DepartmentName = user.Department.Name,
+                UserIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType)
+            };
         }
 
         private async Task ValidateInput(string email, string passwordHash)

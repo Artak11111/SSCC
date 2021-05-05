@@ -1,6 +1,4 @@
 ﻿using ControlCenter.BL.Commands.Users;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Server.TaskExecutor;
 using ControlCenter.Server.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -19,44 +17,55 @@ namespace ControlCenter.Server.Controllers
 
         private readonly AuthenticateUserCommand authenticateUserCommand;
         private readonly ChangePasswordCommand changePasswordCommand;
+        private readonly ChangeDepartmentCommand changeDepartmentCommand;
         private readonly TaskExecutor.TaskExecutor taskExecutor;
 
         #endregion Commands and Queries
 
         #region Constructor
 
-        public AccountController(ChangePasswordCommand changePasswordCommand, AuthenticateUserCommand authenticateUserCommand, TaskExecutor.TaskExecutor taskExecutor)
+        public AccountController(ChangeDepartmentCommand changeDepartmentCommand, ChangePasswordCommand changePasswordCommand, AuthenticateUserCommand authenticateUserCommand, TaskExecutor.TaskExecutor taskExecutor)
         {
             this.authenticateUserCommand = authenticateUserCommand;
             this.changePasswordCommand = changePasswordCommand;
+            this.changeDepartmentCommand = changeDepartmentCommand;
             this.taskExecutor = taskExecutor;
         }
 
         #endregion Constructor
 
+        #region Actions
+
         [HttpPost]
         [Route("SignIn")]
         public async Task<IActionResult> SignIn(string email, string passwordHash)
         {
-            var result = await taskExecutor.Execute(async ()=> 
+            var result = await taskExecutor.Execute(async () =>
             {
-                var claimsIdentity = await authenticateUserCommand.Execute(email, passwordHash);
+                var authenticationResult = await authenticateUserCommand.Execute(email, passwordHash);
 
                 var now = DateTime.UtcNow;
-                // создаем JWT-токен
                 var jwt = new JwtSecurityToken(
                         issuer: AuthOptions.ISSUER,
                         audience: AuthOptions.AUDIENCE,
                         notBefore: now,
-                        claims: claimsIdentity.Claims,
+                        claims: authenticationResult.UserIdentity.Claims,
                         expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                         signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                return encodedJwt;
+                return new Models.SignInResult
+                {
+                    UserId = authenticationResult.UserId,
+                    Name = authenticationResult.Name,
+                    DepartmentId = authenticationResult.DepartmentId,
+                    DepartmentName = authenticationResult.DepartmentName,
+                    Email = authenticationResult.Email,
+                    Token = encodedJwt
+                };
             });
 
-            if(result.ErrorMessage == null)
+            if (result.ErrorMessage == null)
             {
                 return Json(result.Result);
             }
@@ -64,7 +73,7 @@ namespace ControlCenter.Server.Controllers
             return BadRequest(result.ErrorMessage);
         }
 
-        [HttpPost()]
+        [HttpPost]
         [Route("ChangePassword")]
         [Authorize]
         public async Task<IActionResult> ChangePassword(Guid userId, string oldPasswordHash, string newPasswordHash)
@@ -81,5 +90,25 @@ namespace ControlCenter.Server.Controllers
 
             return BadRequest(result.ErrorMessage);
         }
+
+        [HttpPost]
+        [Route("ChangeDepartment")]
+        [Authorize(Roles = "Management")]
+        public async Task<IActionResult> ChangeDepartment(Guid userId, Guid departmentId)
+        {
+            var result = await taskExecutor.Execute(async () =>
+            {
+                await changeDepartmentCommand.Execute(userId, departmentId);
+            });
+
+            if (result.ErrorMessage == null)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
+
+        #endregion Actions
     }
 }

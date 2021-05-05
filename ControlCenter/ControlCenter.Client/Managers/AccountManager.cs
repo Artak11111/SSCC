@@ -1,7 +1,10 @@
 ﻿using ControlCenter.Client.Client;
+using ControlCenter.Client.Sequrity;
+using ControlCenter.Client.Services;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Windows;
+using ControlCenter.Client.Managers.Models;
 
 namespace ControlCenter.Client.Managers
 {
@@ -10,6 +13,8 @@ namespace ControlCenter.Client.Managers
         #region Fields
 
         private readonly ApiClient client;
+        private readonly NotificationService notificationService;
+        private readonly UserSession.UserSession userSession;
 
         //endpoints
 
@@ -17,14 +22,17 @@ namespace ControlCenter.Client.Managers
 
         private readonly string SignInUrl = $"{ControllerName}/SignIn";
         private readonly string ChangePasswordUrl = $"{ControllerName}/ChangePassword";
+        private readonly string ChangeDepartmentUrl = $"{ControllerName}/ChangeDepartment";
 
         #endregion Fields
 
         #region Constructor
 
-        public AccountManager(ApiClient client)
+        public AccountManager(ApiClient client, UserSession.UserSession userSession, NotificationService notificationService)
         {
             this.client = client;
+            this.notificationService = notificationService;
+            this.userSession = userSession;
         }
 
         #endregion Constructor
@@ -33,19 +41,41 @@ namespace ControlCenter.Client.Managers
 
         public async Task SignIn(string email, string password)
         {
-            var result = await client.SendAsync<string>(HttpMethod.Post, $"{SignInUrl}?email={email}&passwordHash={password}");
+            var response = await client.SendAsync<SignInResult>(HttpMethod.Post, $"{SignInUrl}?email={email}&passwordHash={Cryptography.GetPasswordHash(password)}");
 
-            client.AddAuthentication(result.Result);
-
-            var req = await client.SendAsync(HttpMethod.Post, $"{ChangePasswordUrl}?userId=18937b7a-ef15-4e14-a8c5-5f51552236a0&newPasswordHash=NewPassword");
-
-            if (string.IsNullOrEmpty(req.ErrorMessage))
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
-                MessageBox.Show("Success");
+                notificationService.ShowError(response.ErrorMessage);
+                return;
             }
-            else
+
+            userSession.StartSession(response.Result);
+            client.AddAuthentication(response.Result.Token);
+        }
+
+        public void SignOut()
+        {
+            userSession.EndSession();
+        }
+
+        public async Task ChangePassword(string oldPassword, string newPassword)
+        {
+            var oldPasswordHash = string.IsNullOrEmpty(oldPassword) ? string.Empty : Cryptography.GetPasswordHash(oldPassword);
+            var response = await client.SendAsync(HttpMethod.Post, $"{ChangePasswordUrl}?oldasswordHash={oldPasswordHash}&newPasswordHash={Cryptography.GetPasswordHash(newPassword)}");
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
-                MessageBox.Show(req.ErrorMessage);
+                notificationService.ShowError(response.ErrorMessage);
+            }
+        }
+
+        public async Task ChangeDepartment(Guid userId, Guid newDepartmentId)
+        {
+            var response = await client.SendAsync(HttpMethod.Post, $"{ChangeDepartmentUrl}?userId={userSession.UserId}&newDepartmentId={newDepartmentId}");
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            {
+                notificationService.ShowError(response.ErrorMessage);
             }
         }
 

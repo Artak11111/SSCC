@@ -28,10 +28,9 @@ namespace ControlCenter.Server
         public IConfiguration Configuration { get; }
         public IContainer ApplicationContainer { get; set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-
+            // adding authentiction
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -50,10 +49,11 @@ namespace ControlCenter.Server
                     };
                 });
 
-            //add db context 
+            // adding db context 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
+            // adding scoped services
             services.AddScoped<TaskExecutor.TaskExecutor>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -74,7 +74,6 @@ namespace ControlCenter.Server
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -91,9 +90,10 @@ namespace ControlCenter.Server
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // adding custom middleware for capturing authtorized user information in IUserInfoProvider
             app.UseUserInfoProviderSetter();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

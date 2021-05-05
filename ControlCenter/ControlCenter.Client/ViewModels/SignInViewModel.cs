@@ -1,6 +1,7 @@
 ﻿using ControlCenter.Client.Managers;
 using System;
 using System.Windows.Input;
+using ControlCenter.Client.Services;
 
 namespace ControlCenter.Client.ViewModels
 {
@@ -16,7 +17,7 @@ namespace ControlCenter.Client.ViewModels
 
         public ICommand SignInCommand => new Command(async ()=>
         {
-            var accountManager = new AccountManager(new Client.ApiClient());
+            var accountManager = new AccountManager(new Client.ApiClient(), new UserSession.UserSession(), new NotificationService());
 
             await accountManager.SignIn(Email, null);
         });
