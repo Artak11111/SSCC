@@ -152,7 +152,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("18937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1997, 7, 20, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1991, 8, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a0"),
                             Email = "hr1@solarsystem.com",
                             Name = "Ani"
@@ -160,7 +160,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("28937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1987, 11, 12, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(2003, 8, 17, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a0"),
                             Email = "hr2@solarsystem.com",
                             Name = "Arsen"
@@ -168,7 +168,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("31937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(2002, 6, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1996, 6, 17, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a0"),
                             Email = "hr3@solarsystem.com",
                             Name = "Davit"
@@ -176,7 +176,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("48937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1996, 2, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1989, 9, 14, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a0"),
                             Email = "hr4@solarsystem.com",
                             Name = "Shushan"
@@ -184,7 +184,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("58937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1989, 1, 20, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1990, 7, 18, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer1@solarsystem.com",
                             Name = "Abgar"
@@ -192,7 +192,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("68937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1994, 6, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1988, 5, 31, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer2@solarsystem.com",
                             Name = "Alex"
@@ -200,7 +200,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("71937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1987, 10, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1990, 3, 15, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer3@solarsystem.com",
                             Name = "Armen"
@@ -208,7 +208,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("88937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1991, 4, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1991, 2, 14, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer4@solarsystem.com",
                             Name = "Arshak"
@@ -216,7 +216,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("98937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1991, 7, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1998, 8, 28, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer5@solarsystem.com",
                             Name = "Tigran"
@@ -224,7 +224,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("10137b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1997, 9, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(2004, 3, 18, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer6@solarsystem.com",
                             Name = "Artyom"
@@ -232,7 +232,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("11037b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1998, 4, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1995, 11, 5, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer7@solarsystem.com",
                             Name = "Margarita"
@@ -240,7 +240,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("12937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1997, 2, 16, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1998, 12, 3, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer8@solarsystem.com",
                             Name = "Tatevik"
@@ -248,7 +248,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("13937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(2000, 10, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1996, 8, 19, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer9@solarsystem.com",
                             Name = "Mihran"
@@ -256,7 +256,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("14937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1995, 9, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1994, 9, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer10@solarsystem.com",
                             Name = "Dianna"
@@ -264,7 +264,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("15937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1994, 4, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1991, 12, 26, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer11@solarsystem.com",
                             Name = "Murad"
@@ -272,7 +272,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("16937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1999, 12, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1989, 3, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer12@solarsystem.com",
                             Name = "Gurgen"
@@ -280,7 +280,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("17937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(1987, 10, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1996, 3, 20, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer13@solarsystem.com",
                             Name = "Elen"
@@ -288,7 +288,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("17137b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(2003, 7, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1995, 2, 7, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer14@solarsystem.com",
                             Name = "Hasmik"
@@ -296,7 +296,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("19937b7a-ef15-4e14-a8c5-5f51552236a0"),
-                            Birthday = new DateTime(2001, 11, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1987, 7, 4, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a1"),
                             Email = "developer15@solarsystem.com",
                             Name = "Gor"
@@ -304,7 +304,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("e886b336-8073-4004-befc-65f792585efd"),
-                            Birthday = new DateTime(2002, 12, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1999, 4, 8, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a2"),
                             Email = "devops1@solarsystem.com",
                             Name = "Viktor"
@@ -312,7 +312,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("e886b336-8073-4004-befc-65f792585ef2"),
-                            Birthday = new DateTime(1990, 2, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(2001, 7, 10, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a2"),
                             Email = "devops2@solarsystem.com",
                             Name = "Karen"
@@ -320,7 +320,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("e886b336-8073-4004-befc-65f792585ef3"),
-                            Birthday = new DateTime(1989, 1, 15, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1991, 6, 19, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a2"),
                             Email = "devops3@solarsystem.com",
                             Name = "Ashot"
@@ -328,7 +328,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("e886b336-8073-4004-befc-65f792585ef4"),
-                            Birthday = new DateTime(2001, 9, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1997, 4, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a2"),
                             Email = "devops4@solarsystem.com",
                             Name = "Kolya"
@@ -336,7 +336,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585efd"),
-                            Birthday = new DateTime(1990, 9, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1996, 2, 4, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales1@solarsystem.com",
                             Name = "Anahit"
@@ -344,7 +344,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585ef2"),
-                            Birthday = new DateTime(1991, 7, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(2002, 6, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales2@solarsystem.com",
                             Name = "Edgar"
@@ -352,7 +352,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585ef3"),
-                            Birthday = new DateTime(1995, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1988, 3, 14, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales3@solarsystem.com",
                             Name = "Arsen"
@@ -360,7 +360,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585ef4"),
-                            Birthday = new DateTime(2000, 7, 31, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1994, 11, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales4@solarsystem.com",
                             Name = "Arto"
@@ -368,7 +368,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585ef5"),
-                            Birthday = new DateTime(1990, 12, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1995, 3, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales5@solarsystem.com",
                             Name = "Rafo"
@@ -376,7 +376,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("f886b336-8073-4004-befc-65f792585ef6"),
-                            Birthday = new DateTime(2003, 3, 6, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1989, 1, 20, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a3"),
                             Email = "sales6@solarsystem.com",
                             Name = "Ando"
@@ -384,7 +384,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("8a64082d-6365-4cf4-816a-521bfaa84ac1"),
-                            Birthday = new DateTime(2000, 11, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1995, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a4"),
                             Email = "management1@solarsystem.com",
                             Name = "Mxitar"
@@ -392,7 +392,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("8a64082d-6365-4cf4-816a-521bfaa84ac2"),
-                            Birthday = new DateTime(1995, 1, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(2002, 12, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a4"),
                             Email = "management2@solarsystem.com",
                             Name = "Nver"
@@ -400,7 +400,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("8a64082d-6365-4cf4-816a-521bfaa84ac3"),
-                            Birthday = new DateTime(1992, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1991, 8, 28, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a4"),
                             Email = "management3@solarsystem.com",
                             Name = "Narek"
@@ -408,7 +408,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("8a64082d-6365-4cf4-816a-521bfaa84ac4"),
-                            Birthday = new DateTime(1993, 8, 20, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1990, 9, 2, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a4"),
                             Email = "management4@solarsystem.com",
                             Name = "Syuzi"
@@ -416,7 +416,7 @@ namespace ControlCenter.DB.Migrations
                         new
                         {
                             Id = new Guid("8a64082d-6365-4cf4-816a-521bfaa84ac5"),
-                            Birthday = new DateTime(1992, 9, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            Birthday = new DateTime(1995, 9, 13, 0, 0, 0, 0, DateTimeKind.Local),
                             DepartmentId = new Guid("39137b7a-ef15-4e14-a8c5-5f51552236a4"),
                             Email = "management5@solarsystem.com",
                             Name = "Katya"
