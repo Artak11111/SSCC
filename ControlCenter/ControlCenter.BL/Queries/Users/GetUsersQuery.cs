@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ControlCenter.BL.Queries.Notifications
+namespace ControlCenter.BL.Queries.Users
 {
-    public class GetNewNotificationsQuery
+    public class GetUsersQuery
     {
         #region Fields
 
-        private readonly IRepository<UserNotification> userNotificationRepository;
         private readonly IRepository<User> userRepository;
         private readonly IUserInfoProvider userInfoProvider;
 
@@ -20,9 +19,8 @@ namespace ControlCenter.BL.Queries.Notifications
 
         #region Constructor
 
-        public GetNewNotificationsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<UserNotification> userNotificationRepository)
+        public GetUsersQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository)
         {
-            this.userNotificationRepository = userNotificationRepository;
             this.userRepository = userRepository;
             this.userInfoProvider = userInfoProvider;
         }
@@ -31,21 +29,16 @@ namespace ControlCenter.BL.Queries.Notifications
 
         #region Methods
 
-        public async Task<List<UserNotification>> Execute()
+        public async Task<List<User>> Execute()
         {
             // validations
             await ValidateInput();
 
-            var result = await userNotificationRepository
-                .Include(un => un.Notification.Department)
-                .Where(un => un.UserId == userInfoProvider.CurrentUserId && un.IsNew)
-                .OrderByDescending(n => n.DateTime)
+            return await userRepository.AsQueryable()
+                .Include(u=>u.Department)
+                .OrderBy(d=> d.Name)
                 .AsNoTracking()
                 .ToListAsync();
-
-            result.ForEach(n => n.Notification.TargetUsers = null);
-
-            return result;
         }
 
         private async Task ValidateInput()

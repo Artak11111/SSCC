@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using ControlCenter.BL.Queries.Departments;
+using ControlCenter.BL.Commands.Departments;
+using System;
 
 namespace ControlCenter.Server.Controllers
 {
@@ -12,6 +14,8 @@ namespace ControlCenter.Server.Controllers
     {
         #region Commands and Queries
 
+        private readonly ChangeDepartmentStatusCommand changeDepartmentStatusCommand;
+        private readonly GetDisabledDepartmentsQuery getDisabledDepartmentsQuery;
         private readonly GetDepartmentsQuery getDepartmentsQuery;
         private readonly TaskExecutor.TaskExecutor taskExecutor;
 
@@ -19,9 +23,11 @@ namespace ControlCenter.Server.Controllers
 
         #region Constructor
 
-        public DepartmentsController(GetDepartmentsQuery getDepartmentsQuery, TaskExecutor.TaskExecutor taskExecutor)
+        public DepartmentsController(ChangeDepartmentStatusCommand changeDepartmentStatusCommand, GetDisabledDepartmentsQuery getDisabledDepartmentsQuery, GetDepartmentsQuery getDepartmentsQuery, TaskExecutor.TaskExecutor taskExecutor)
         {
             this.getDepartmentsQuery = getDepartmentsQuery;
+            this.changeDepartmentStatusCommand = changeDepartmentStatusCommand;
+            this.getDisabledDepartmentsQuery = getDisabledDepartmentsQuery;
             this.taskExecutor = taskExecutor;
         }
 
@@ -41,6 +47,40 @@ namespace ControlCenter.Server.Controllers
             if (result.ErrorMessage == null)
             {
                 return Json(result.Result);
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
+
+        [HttpGet]
+        [Route("GetDisabledDepartments")]
+        public async Task<IActionResult> GetDisabledDepartments()
+        {
+            var result = await taskExecutor.Execute(async () =>
+            {
+                return await getDisabledDepartmentsQuery.Execute();
+            });
+
+            if (result.ErrorMessage == null)
+            {
+                return Json(result.Result);
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPost]
+        [Route("ChangeDepartmentStatus")]
+        public async Task<IActionResult> ChangeDepartmentStatus(Guid departmentId)
+        {
+            var result = await taskExecutor.Execute(async () =>
+            {
+                await changeDepartmentStatusCommand.Execute(departmentId);
+            });
+
+            if (result.ErrorMessage == null)
+            {
+                return Ok();
             }
 
             return BadRequest(result.ErrorMessage);

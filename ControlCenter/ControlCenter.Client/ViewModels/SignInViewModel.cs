@@ -57,11 +57,11 @@ namespace ControlCenter.Client.ViewModels
 
             var result = await accountManager.SignIn(Email, Password);
 
+            IsBusy = false;
+
             if (!result) return;
 
             navgiationManager.RequestNavigate<Dashboard>(RegionNames.Main);
-
-            IsBusy = false;
         });
 
         public ICommand SignUpCommand => new Command(() =>

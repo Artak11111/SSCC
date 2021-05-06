@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="ControlCenter.Client.Controls.OrganizationStrucutreControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlCenter.Client.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Organization Structure" 
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Left"
+                   FontSize="25"
+                   Margin="20 20 20 5"/>
+
+        <TextBlock Text="Here you can manage organization structure" 
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Left"
+                   FontSize="15"
+                   Margin="20 0 20 20"/>
+
+        <DataGrid Grid.Row="2" Grid.Column="1" Margin="10" Width="400"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Department" Binding="{Binding Department.Name}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
+                <DataGridTextColumn Header="Birthday" Binding="{Binding Birthday}" />
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="To Change Employee Department, select department from the list below"
+                                   Margin="10"/>
+
+                        <ComboBox Margin="10" />
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+    </Grid>
+</UserControl>

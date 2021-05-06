@@ -15,5 +15,7 @@ namespace ControlCenter.Client.Managers.Models
         public Guid DepartmentId { get; set; }
         
         public Department Department { get; set; }
+
+        public string DisplayName => $"{Name} from {Department?.Name} department";
     }
 }

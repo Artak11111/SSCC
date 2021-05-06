@@ -32,7 +32,13 @@ namespace ControlCenter.Client.Navigation
             if (string.IsNullOrEmpty(regionName)) throw new ArgumentNullException(nameof(regionName));
             if (container == null) throw new ArgumentNullException(nameof(container));
 
-            if (regions.ContainsKey(regionName)) return;
+            if (regions.ContainsKey(regionName))
+            {
+                regions[regionName] = container;
+                navigationHistory[regionName] = new List<UserControl>();
+
+                return;
+            }
 
             regions.Add(regionName, container);
 
@@ -59,7 +65,6 @@ namespace ControlCenter.Client.Navigation
 
             regions[regionName].Content = new T();
             navigationHistory[regionName].Add(regions[regionName].Content as UserControl);
-
         }
 
         public bool NavigateBack(string regionName = "MainRegion")

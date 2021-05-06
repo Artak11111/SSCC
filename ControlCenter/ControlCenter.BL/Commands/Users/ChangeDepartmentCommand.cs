@@ -51,7 +51,7 @@ namespace ControlCenter.BL.Commands.Users
 
             user.DepartmentId = departmentId;
 
-            await userRepository.SaveChangesAsync();
+            await departmentRepository.SaveChangesAsync();
 
             await NotifyManagers(user, oldDepartment, newDepartment);
         }
@@ -60,9 +60,9 @@ namespace ControlCenter.BL.Commands.Users
         {
             await createNotificationCommand.Execute(new CreateNotificationInputModel
             {
-                DateTime = DateTimeOffset.UtcNow,
+                DateTime = DateTime.UtcNow,
                 Message = $"Employee {user.Name} was moved from {oldDepartment.Name} to {newDepartment.Name}",
-                Repeat = null,
+                Repeat = RepeatInterval.Never,
                 // little hack: 
                 // As we know that only managers can change department, then after validation we are sure that current users department is management
                 // so we can send notification to management department

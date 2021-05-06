@@ -8,6 +8,7 @@ namespace ControlCenter.Entities
 {
     public enum RepeatInterval
     {
+        Never,
         TwiceADay,
         Daily,
         Weekly,

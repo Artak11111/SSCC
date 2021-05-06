@@ -6,6 +6,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using ControlCenter.BL.Queries.Users;
 
 namespace ControlCenter.Server.Controllers
 {
@@ -18,17 +19,19 @@ namespace ControlCenter.Server.Controllers
         private readonly AuthenticateUserCommand authenticateUserCommand;
         private readonly ChangePasswordCommand changePasswordCommand;
         private readonly ChangeDepartmentCommand changeDepartmentCommand;
+        private readonly GetUsersQuery getUsersQuery;
         private readonly TaskExecutor.TaskExecutor taskExecutor;
 
         #endregion Commands and Queries
 
         #region Constructor
 
-        public AccountController(ChangeDepartmentCommand changeDepartmentCommand, ChangePasswordCommand changePasswordCommand, AuthenticateUserCommand authenticateUserCommand, TaskExecutor.TaskExecutor taskExecutor)
+        public AccountController(GetUsersQuery getUsersQuery, ChangeDepartmentCommand changeDepartmentCommand, ChangePasswordCommand changePasswordCommand, AuthenticateUserCommand authenticateUserCommand, TaskExecutor.TaskExecutor taskExecutor)
         {
             this.authenticateUserCommand = authenticateUserCommand;
             this.changePasswordCommand = changePasswordCommand;
             this.changeDepartmentCommand = changeDepartmentCommand;
+            this.getUsersQuery = getUsersQuery;
             this.taskExecutor = taskExecutor;
         }
 
@@ -108,6 +111,25 @@ namespace ControlCenter.Server.Controllers
 
             return BadRequest(result.ErrorMessage);
         }
+
+
+        [HttpGet]
+        [Route("GetUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var result = await taskExecutor.Execute(async () =>
+            {
+                return await getUsersQuery.Execute();
+            });
+
+            if (result.ErrorMessage == null)
+            {
+                return Json(result.Result);
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
+
 
         #endregion Actions
     }

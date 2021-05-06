@@ -11,9 +11,7 @@ namespace ControlCenter.DB.Configurations
         {
             builder.HasKey(i => i.Id);
 
-            builder.HasOne(u=>u.Department)
-                .WithMany(d=>d.Users)
-                .HasForeignKey(u=>u.DepartmentId);
+            builder.HasOne(u=>u.Department);
 
             // HR department
             builder.HasData(new User

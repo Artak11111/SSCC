@@ -36,12 +36,16 @@ namespace ControlCenter.BL.Queries.Notifications
             // validations
             await ValidateInput();
 
-            return await userNotificationRepository
-                .Include(un => un.Notification)
+            var result =  await userNotificationRepository
+                .Include(un => un.Notification.Department)
                 .Where(un => un.UserId == userInfoProvider.CurrentUserId)
                 .OrderByDescending(n=>n.DateTime)
                 .AsNoTracking()
                 .ToListAsync();
+
+            result.ForEach(n => n.Notification.TargetUsers = null);
+
+            return result;
         }
 
         private async Task ValidateInput()

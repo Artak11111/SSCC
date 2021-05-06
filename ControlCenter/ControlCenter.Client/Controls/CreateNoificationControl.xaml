@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="ControlCenter.Client.Controls.CreateNoificationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ControlCenter.Client.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Create new event" 
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Center"
+                   FontSize="25"
+                   Margin="20"/>
+
+        <Grid Grid.Row="1" Grid.Column="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Target type" Margin="10"/>
+            <ComboBox Grid.Column="1" Margin="10" Width="250"
+                      ItemsSource="{Binding CreateEventModel.AvailableTargetTypes}" 
+                      SelectedItem="{Binding CreateEventModel.TargetType}"/>
+
+            <Label Grid.Row="1" Content="Target" Margin="10"
+                   Visibility="{Binding  CreateEventModel.IsTargetLabelVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="10" Width="250"
+                      DisplayMemberPath="DisplayName"
+                      ItemsSource="{Binding CreateEventModel.AvailableUsers}" 
+                      SelectedItem="{Binding CreateEventModel.SelectedUser}"
+                      Visibility="{Binding  CreateEventModel.IsUserComboboxVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </ComboBox>
+
+            <ListView Grid.Row="1" Grid.Column="1" Margin="10" Width="250" SelectionMode="Multiple"
+                      Name="departments"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Height="100"
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding CreateEventModel.AvailableDepartmens}" 
+                      SelectionChanged="SelectionChanged"
+                      Visibility="{Binding CreateEventModel.IsDepartmentListViewVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </ListView>
+
+            <Label Grid.Row="2" Content="Repeat" Margin="10"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="10" Width="250"
+                      ItemsSource="{Binding CreateEventModel.AvailableRepeatTypes}" 
+                      SelectedItem="{Binding CreateEventModel.Repeat}"/>
+
+            <Label Grid.Row="3" Content="Date And Time" Margin="10"/>
+            <DatePicker Grid.Row="3" Grid.Column="1" Margin="10" Width="250" 
+                        SelectedDate="{Binding CreateEventModel.SelectedDate}"/>
+
+            <Label Grid.Row="4" Content="Message" Margin="10"/>
+            <TextBox Grid.Row="4" Grid.Column="1" Margin="10" Width="250"
+                     Text="{Binding CreateEventModel.Message, Mode=TwoWay}"/>
+        </Grid>
+
+        <Button Grid.Row="3" 
+                Grid.ColumnSpan="3"
+                Command="{Binding CreateEventCommand}"
+                IsEnabled="{Binding CreateEventModel.CanCreateEvent}"
+                Content="Create"
+                HorizontalAlignment="Center"
+                Padding="40 10"
+                Margin="20"/>
+    </Grid>
+</UserControl>

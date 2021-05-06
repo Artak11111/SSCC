@@ -18,5 +18,7 @@ namespace ControlCenter.Entities
         public Department Department { get; set; }
         
         public List<UserNotification> Notifications { get; set; }
+
+        public List<DisabledDepartment> DisabledDepartments { get; set; }
     }
 }

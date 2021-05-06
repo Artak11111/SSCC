@@ -64,7 +64,9 @@ namespace ControlCenter.Server
             services.AddSingleton<IJobManager, JobManager>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(o=> o.JsonSerializerOptions.MaxDepth = 10000);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ControlCenter.Server", Version = "v1"});
@@ -90,7 +92,7 @@ namespace ControlCenter.Server
             var jobManager = serviceProvider.GetService<IJobManager>();
             var notificationSenderJob = serviceProvider.GetService<NotificationSenderJob>();
 
-            jobManager.CreateJob(NotificationSenderJob.Key, 10, notificationSenderJob.Execute);
+            jobManager.CreateJob(NotificationSenderJob.Key, 5, notificationSenderJob.Execute);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

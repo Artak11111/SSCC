@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ControlCenter.Client.Managers.Models;
+using System.Collections.Generic;
 
 namespace ControlCenter.Client.Managers
 {
@@ -23,6 +24,7 @@ namespace ControlCenter.Client.Managers
         private readonly string SignInUrl = $"{ControllerName}/SignIn";
         private readonly string ChangePasswordUrl = $"{ControllerName}/ChangePassword";
         private readonly string ChangeDepartmentUrl = $"{ControllerName}/ChangeDepartment";
+        private readonly string GetUsersUrl = $"{ControllerName}/GetUsers";
 
         #endregion Fields
 
@@ -87,6 +89,20 @@ namespace ControlCenter.Client.Managers
             }
 
             return true;
+        }
+
+
+        public async Task<List<User>> GetUsers()
+        {
+            var response = await client.SendAsync<List<User>>(HttpMethod.Get, GetUsersUrl);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            {
+                notificationService.ShowError(response.ErrorMessage);
+                return null;
+            }
+
+            return response.Result;
         }
 
         #endregion Methods

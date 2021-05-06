@@ -9,9 +9,9 @@ namespace ControlCenter.BL.Commands.Notifications.Models
         public string Message { get; set; }
 
 
-        public RepeatInterval? Repeat { get; set; }
+        public RepeatInterval Repeat { get; set; }
 
-        public DateTimeOffset DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
         public Guid? TargetUserId { get; set; }
 

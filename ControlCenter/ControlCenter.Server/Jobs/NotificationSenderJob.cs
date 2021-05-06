@@ -3,6 +3,7 @@ using ControlCenter.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ControlCenter.Server.Jobs
@@ -16,6 +17,7 @@ namespace ControlCenter.Server.Jobs
         private readonly IRepository<Notification> notificationRepository;
         private readonly IRepository<UserNotification> userNotificationRepository;
         private readonly IRepository<User> userRepository;
+        private readonly Semaphore semaphore = new Semaphore(1,1, "Syncronization_Object");
 
         #endregion Fields
 
@@ -34,6 +36,8 @@ namespace ControlCenter.Server.Jobs
 
         public async Task Execute()
         {
+            semaphore.WaitOne();
+
             try
             {
                 var notifications = await notificationRepository
@@ -61,10 +65,9 @@ namespace ControlCenter.Server.Jobs
                     }
 
                     var targetUsers = notification.IsForEveryOne
-                        ? await userRepository.ToListAsync()
-                        : await userRepository
-                            .Where(u => notification.TargetDepartments.Any(d => d.DepartmentId == u.DepartmentId))
-                            .ToListAsync();
+                        ? await userRepository.AsQueryable().AsNoTracking().ToListAsync()
+                        : (await userRepository.AsQueryable().AsNoTracking().ToListAsync())
+                            .Where(u => notification.TargetDepartments.Any(d => d.DepartmentId == u.DepartmentId)).ToList();
 
                     foreach (var user in targetUsers)
                     {
@@ -79,21 +82,25 @@ namespace ControlCenter.Server.Jobs
                     }
 
                     notification.NextScheduledNotificatinoDateTime = GetNextNotificationTime(notification);
-                }
 
-                await notificationRepository.SaveChangesAsync();
+                    await userNotificationRepository.SaveChangesAsync();
+                    await notificationRepository.SaveChangesAsync();
+                }
             }
-            catch
+            catch (Exception ex)
             {
 
             }
+
+            semaphore.Release();
         }
 
         private DateTimeOffset? GetNextNotificationTime(Notification notification)
         {
             return notification.Repeat switch
             {
-                null => null,
+                RepeatInterval.Never => null,
+                RepeatInterval.TwiceADay => notification.NextScheduledNotificatinoDateTime.Value.AddHours(12),
                 RepeatInterval.Daily => notification.NextScheduledNotificatinoDateTime.Value.AddDays(1),
                 RepeatInterval.Weekly => notification.NextScheduledNotificatinoDateTime.Value.AddDays(7),
                 RepeatInterval.Monthly => notification.NextScheduledNotificatinoDateTime.Value.AddMonths(1),

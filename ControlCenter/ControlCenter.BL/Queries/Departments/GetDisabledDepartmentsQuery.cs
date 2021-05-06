@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ControlCenter.BL.Queries.Notifications
+namespace ControlCenter.BL.Queries.Departments
 {
-    public class GetNewNotificationsQuery
+    public class GetDisabledDepartmentsQuery
     {
         #region Fields
 
-        private readonly IRepository<UserNotification> userNotificationRepository;
+        private readonly IRepository<DisabledDepartment> departmentRepository;
         private readonly IRepository<User> userRepository;
         private readonly IUserInfoProvider userInfoProvider;
 
@@ -20,9 +20,9 @@ namespace ControlCenter.BL.Queries.Notifications
 
         #region Constructor
 
-        public GetNewNotificationsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<UserNotification> userNotificationRepository)
+        public GetDisabledDepartmentsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<DisabledDepartment> departmentRepository)
         {
-            this.userNotificationRepository = userNotificationRepository;
+            this.departmentRepository = departmentRepository;
             this.userRepository = userRepository;
             this.userInfoProvider = userInfoProvider;
         }
@@ -31,21 +31,16 @@ namespace ControlCenter.BL.Queries.Notifications
 
         #region Methods
 
-        public async Task<List<UserNotification>> Execute()
+        public async Task<List<DisabledDepartment>> Execute()
         {
             // validations
             await ValidateInput();
 
-            var result = await userNotificationRepository
-                .Include(un => un.Notification.Department)
-                .Where(un => un.UserId == userInfoProvider.CurrentUserId && un.IsNew)
-                .OrderByDescending(n => n.DateTime)
+            return await departmentRepository.AsQueryable()
+                .Where(d=>d.UserId == userInfoProvider.CurrentUserId)
+                .OrderBy(d=> d.Department.Name)
                 .AsNoTracking()
                 .ToListAsync();
-
-            result.ForEach(n => n.Notification.TargetUsers = null);
-
-            return result;
         }
 
         private async Task ValidateInput()

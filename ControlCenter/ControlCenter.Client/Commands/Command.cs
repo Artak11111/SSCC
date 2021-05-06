@@ -36,7 +36,7 @@ namespace ControlCenter.Client.Commands
                 else if (executeAsync != null)
                     await executeAsync();
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show("Application error");
             }

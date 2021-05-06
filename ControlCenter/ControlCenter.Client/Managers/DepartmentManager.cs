@@ -1,6 +1,7 @@
 ﻿using ControlCenter.Client.Client;
 using ControlCenter.Client.Managers.Models;
 using ControlCenter.Client.Services;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace ControlCenter.Client.Managers
         private const string ControllerName = "Departments";
 
         private readonly string GetDepartmentsUrl = $"{ControllerName}/GetDepartments";
+        private readonly string GetDisabledDepartmentsUrl = $"{ControllerName}/GetDisabledDepartments";
+        private readonly string ChangeDepartmentStatusUrl = $"{ControllerName}/ChangeDepartmentStatus";
 
         #endregion Fields
 
@@ -36,7 +39,7 @@ namespace ControlCenter.Client.Managers
 
         public async Task<List<Department>> GetDepartments()
         {
-            var response = await client.SendAsync<List<Department>>(HttpMethod.Post, GetDepartmentsUrl);
+            var response = await client.SendAsync<List<Department>>(HttpMethod.Get, GetDepartmentsUrl);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
@@ -45,6 +48,32 @@ namespace ControlCenter.Client.Managers
             }
 
             return response.Result;
+        }
+
+        public async Task<List<DisabledDepartment>> GetDisabledDepartments()
+        {
+            var response = await client.SendAsync<List<DisabledDepartment>>(HttpMethod.Get, GetDisabledDepartmentsUrl);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            {
+                notificationService.ShowError(response.ErrorMessage);
+                return null;
+            }
+
+            return response.Result;
+        }
+
+        public async Task<bool> ChangeDepartmentStatus(Guid departmentId)
+        {
+            var response = await client.SendAsync(HttpMethod.Post, $"{ChangeDepartmentStatusUrl}?departmentId={departmentId}");
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            {
+                notificationService.ShowError(response.ErrorMessage);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion Methods

@@ -1,6 +1,7 @@
 ﻿using ControlCenter.Client.Client;
 using ControlCenter.Client.Managers.Models;
 using ControlCenter.Client.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -40,9 +41,9 @@ namespace ControlCenter.Client.Managers
 
         #region Methods
 
-        public async Task<List<Notification>> GetNotifications()
+        public async Task<List<UserNotification>> GetNotifications()
         {
-            var response = await client.SendAsync<List<Notification>>(HttpMethod.Post, GetNotificationsUrl);
+            var response = await client.SendAsync<List<UserNotification>>(HttpMethod.Get, GetNotificationsUrl);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
@@ -53,9 +54,9 @@ namespace ControlCenter.Client.Managers
             return response.Result;
         }
 
-        public async Task<List<Notification>> GetNewNotifications()
+        public async Task<List<UserNotification>> GetNewNotifications()
         {
-            var response = await client.SendAsync<List<Notification>>(HttpMethod.Post, GetNewNotificationsUrl);
+            var response = await client.SendAsync<List<UserNotification>>(HttpMethod.Get, GetNewNotificationsUrl);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
@@ -68,7 +69,7 @@ namespace ControlCenter.Client.Managers
 
         public async Task<bool?> CheckForNewNotifications()
         {
-            var response = await client.SendAsync<bool>(HttpMethod.Post, CheckForNewNotificationsUrl);
+            var response = await client.SendAsync<bool>(HttpMethod.Get, CheckForNewNotificationsUrl);
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
@@ -89,14 +90,18 @@ namespace ControlCenter.Client.Managers
             }
         }
 
-        public async Task CreateNotification(CreateNotificationInputModel input)
+        public async Task<bool> CreateNotification(CreateNotificationInputModel input)
         {
-            var response = await client.SendAsync(HttpMethod.Post, CreateNotificationUrl, input);
+            var response = await client.SendAsync(HttpMethod.Post, $"{CreateNotificationUrl}?input={JsonConvert.SerializeObject(input)}");
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
                 notificationService.ShowError(response.ErrorMessage);
+
+                return false;
             }
+
+            return true;
         }
 
         #endregion Methods

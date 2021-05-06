@@ -11,7 +11,7 @@ namespace ControlCenter.Client.Managers.Models
 
         public RepeatInterval? Repeat { get; set; }
 
-        public DateTimeOffset DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
         public Guid? TargetUserId { get; set; }
 

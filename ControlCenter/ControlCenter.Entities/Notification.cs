@@ -7,7 +7,7 @@ namespace ControlCenter.Entities
     {
         public string Message { get; set; }
 
-        public RepeatInterval? Repeat { get; set; }
+        public RepeatInterval Repeat { get; set; }
 
         public DateTimeOffset? NextScheduledNotificatinoDateTime { get; set; }
 

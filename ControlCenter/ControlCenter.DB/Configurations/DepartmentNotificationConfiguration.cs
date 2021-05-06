@@ -9,12 +9,6 @@ namespace ControlCenter.DB.Configurations
         public void Configure(EntityTypeBuilder<DepartmentNotification> builder)
         {
             builder.HasKey(i => new { i .DepartmentId, i.NotificationId });
-
-            builder
-                .HasOne(un => un.Notification)
-                .WithMany(n => n.TargetDepartments)
-                .HasForeignKey(u => u.NotificationId)
-                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

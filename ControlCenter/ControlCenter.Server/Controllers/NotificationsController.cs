@@ -5,6 +5,7 @@ using ControlCenter.BL.Commands.Notifications.Models;
 using ControlCenter.BL.Queries.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ControlCenter.Server.Controllers
 {
@@ -26,11 +27,13 @@ namespace ControlCenter.Server.Controllers
 
         #region Constructor
 
-        public NotificationsController(CreateNotificationCommand createNotificationCommand, MarkNotificationAsSeenCommand markNotificationAsSeenCommand, GetNotificationsQuery getNotificationsQuery, TaskExecutor.TaskExecutor taskExecutor)
+        public NotificationsController(GetNewNotificationsQuery getNewNotificationsQuery, CheckForNewNotificationsQuery checkForNewNotificationsQuery, CreateNotificationCommand createNotificationCommand, MarkNotificationAsSeenCommand markNotificationAsSeenCommand, GetNotificationsQuery getNotificationsQuery, TaskExecutor.TaskExecutor taskExecutor)
         {
             this.getNotificationsQuery = getNotificationsQuery;
+            this.getNewNotificationsQuery = getNewNotificationsQuery;
             this.createNotificationCommand = createNotificationCommand;
             this.markNotificationAsSeenCommand = markNotificationAsSeenCommand;
+            this.checkForNewNotificationsQuery = checkForNewNotificationsQuery;
             this.taskExecutor = taskExecutor;
         }
 
@@ -108,11 +111,11 @@ namespace ControlCenter.Server.Controllers
 
         [HttpPost]
         [Route("CreateNotification")]
-        public async Task<IActionResult> CreateNotification([FromBody]CreateNotificationInputModel input)
+        public async Task<IActionResult> CreateNotification(string input)
         {
             var result = await taskExecutor.Execute(async () =>
             {
-                await createNotificationCommand.Execute(input);
+                await createNotificationCommand.Execute(JsonConvert.DeserializeObject<CreateNotificationInputModel>(input));
             });
 
             if (result.ErrorMessage == null)

@@ -53,7 +53,9 @@ namespace ControlCenter.BL.Commands.Notifications
 
             notificationRepository.Add(notification);
 
-            foreach (var departmentId in input.TargetDepartments)
+            await notificationRepository.SaveChangesAsync();
+
+            foreach (var departmentId in input.TargetDepartments ?? new System.Collections.Generic.List<Guid>())
             {
                 departmentNotificationRepository.Add(new DepartmentNotification
                 {
@@ -62,7 +64,7 @@ namespace ControlCenter.BL.Commands.Notifications
                 });
             }
 
-            await notificationRepository.SaveChangesAsync();
+            await departmentNotificationRepository.SaveChangesAsync();
         }
 
         private async Task ValidateInput(CreateNotificationInputModel input)
@@ -75,7 +77,7 @@ namespace ControlCenter.BL.Commands.Notifications
                 || !input.IsForEveryOne && input.TargetDepartments != null && input.TargetUserId != null)
                 throw new InvalidOperationException("Notification target must be set once");
 
-            if (input.Repeat == null && input.DateTime.ToUniversalTime() < DateTimeOffset.UtcNow)
+            if (input.Repeat == RepeatInterval.Never && input.DateTime.ToUniversalTime() < DateTimeOffset.UtcNow)
                 throw new InvalidOperationException("Invalid notification date");
 
             if (input.TargetUserId != null)
@@ -85,7 +87,7 @@ namespace ControlCenter.BL.Commands.Notifications
             }
             else
             {
-                foreach (var departamentId in input.TargetDepartments)
+                foreach (var departamentId in input.TargetDepartments ?? new System.Collections.Generic.List<Guid>())
                 {
                     if (!await departamentRepository.AnyAsync(d => d.Id == departamentId))
                         throw new BusinessException("One of target departments not found");

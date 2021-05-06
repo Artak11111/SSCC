@@ -87,6 +87,7 @@
         <Grid Grid.Row="1">
             <WrapPanel Margin="10">
                 <c:Tile Title="Notifications"
+                        Command="{Binding NavigateToNotificationsCommand}"
                         ToolTip="View all notifications"
                         Width="200"
                         Margin="10"
@@ -112,7 +113,7 @@
 
                 <c:Tile Title="Create"
                         Command="{Binding NavigateToNotificationCreationCommand}"
-                        ToolTip="Create new notification"
+                        ToolTip="Create new event"
                         Width="200"
                         Margin="10"
                         c:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
@@ -124,6 +125,7 @@
                 </c:Tile>
 
                 <c:Tile Title="Organization"
+                        Command="{Binding NavigateToOrganizationStructureCommand}"
                         ToolTip="View and edit organization structure"
                         Margin="10"
                         Width="150"
@@ -137,6 +139,7 @@
                 </c:Tile>
 
                 <c:Tile Title="Settings"
+                        Command="{Binding NavigateToSettingsCommand}"
                         ToolTip="Notification settings"
                         Margin="10"
                         Width="150"
@@ -162,9 +165,11 @@
             <i:PackIconModern Kind="ArrowLeft"/>
         </Button>
 
-        <cc:ActionableContentPresenter x:Name="dashboardContent"
-                                       Panel.ZIndex="1"
-                                       Grid.Row="2"
-                                       Margin="20"/>
+        <Border Panel.ZIndex="1"
+                CornerRadius="5"
+                Grid.Row="2"
+                Margin="20">
+            <cc:ActionableContentPresenter x:Name="dashboardContent"/>
+        </Border>
     </Grid>
 </UserControl>

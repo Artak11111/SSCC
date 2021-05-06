@@ -8,6 +8,7 @@ namespace ControlCenter.Client.Models
 {
     public enum RepeatInterval
     {
+        Never,
         TwiceADay,
         Daily,
         Weekly,

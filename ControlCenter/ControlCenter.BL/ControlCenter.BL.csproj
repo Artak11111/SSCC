@@ -12,8 +12,4 @@
       <ProjectReference Include="..\ControlCenter.Abstractions\ControlCenter.Abstractions.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Queries\Users\" />
-    </ItemGroup>
-
 </Project>
