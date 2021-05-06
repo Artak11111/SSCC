@@ -10,7 +10,13 @@ namespace ControlCenter.Client.Commands
         public event EventHandler CanExecuteChanged;
 
         private readonly Func<Task> executeAsync;
+        private readonly Func<object, Task> executeAsyncWithParameter;
         private readonly Action execute;
+
+        public Command(Func<object, Task> executeAsync)
+        {
+            this.executeAsyncWithParameter = executeAsync ?? throw new ArgumentNullException(nameof(executeAsyncWithParameter));
+        }
 
         public Command(Func<Task> executeAsync)
         {
@@ -35,6 +41,8 @@ namespace ControlCenter.Client.Commands
                     execute();
                 else if (executeAsync != null)
                     await executeAsync();
+                else if (executeAsyncWithParameter != null)
+                   await executeAsyncWithParameter(parameter);
             }
             catch (Exception ex)
             {

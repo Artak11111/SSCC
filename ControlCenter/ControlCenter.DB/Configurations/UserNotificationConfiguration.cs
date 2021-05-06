@@ -8,18 +8,16 @@ namespace ControlCenter.DB.Configurations
     {
         public void Configure(EntityTypeBuilder<UserNotification> builder)
         {
-            builder.HasKey(i => new { i .UserId, i.NotificationId });
+            builder.HasKey(i => i.Id);
 
             builder
                 .HasOne(un => un.User)
                 .WithMany(u => u.Notifications)
-                .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(un => un.Notification)
                 .WithMany(n => n.TargetUsers)
-                .HasForeignKey(u => u.NotificationId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

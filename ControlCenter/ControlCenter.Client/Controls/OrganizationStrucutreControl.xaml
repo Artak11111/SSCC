@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -31,22 +31,29 @@
                    FontSize="15"
                    Margin="20 0 20 20"/>
 
-        <DataGrid Grid.Row="2" Grid.Column="1" Margin="10" Width="400"
+        <DataGrid Grid.Row="2" Grid.Column="1" Margin="10"
+                  Name="dataGrid"
+                  ItemsSource="{Binding OrganizationStructureModel.Employees}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Department" Binding="{Binding Department.Name}" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
-                <DataGridTextColumn Header="Birthday" Binding="{Binding Birthday}" />
+                <DataGridTextColumn Header="Birthday" Binding="{Binding Birthday, StringFormat=dd.MM.yyy}" />
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="To Change Employee Department, select department from the list below"
-                                   Margin="10"/>
+                        <TextBlock Text="To change employee department, select department from the list below"
+                                   Margin="10 20 10 0"/>
 
-                        <ComboBox Margin="10" />
+                        <ComboBox Margin="10" 
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding DataContext.DepartmentId, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                  ItemsSource="{Binding DataContext.OrganizationStructureModel.Departments, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  SelectionChanged="ComboBox_SelectionChanged"/>
                     </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

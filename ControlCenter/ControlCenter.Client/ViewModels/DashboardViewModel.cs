@@ -80,6 +80,14 @@ namespace ControlCenter.Client.ViewModels
             set => Set(ref viewNotificationsModel, value);
         }
 
+        private OrganizationStructureModel organizationStructureModel;
+
+        public OrganizationStructureModel OrganizationStructureModel
+        {
+            get => organizationStructureModel;
+            set => Set(ref organizationStructureModel, value);
+        }
+
         public bool CanNavigateBack => navgiationManager.CanNavigateBack(RegionNames.Dashboard);
 
         public bool HasNewNotifications => NewNotifications?.Count > 0;
@@ -210,10 +218,42 @@ namespace ControlCenter.Client.ViewModels
         });
 
 
-        public ICommand NavigateToOrganizationStructureCommand => new Command(() =>
+        public ICommand NavigateToOrganizationStructureCommand => new Command(async () =>
         {
+            IsBusy = true;
+
+            OrganizationStructureModel = new OrganizationStructureModel();
+
+            var users = await accountManager.GetUsers();
+
+            if(users == null)
+            {
+                IsBusy = false;
+                return;
+            }
+
+            OrganizationStructureModel.Employees = users.OrderBy(u => u.Department.Name).ToList();
+            OrganizationStructureModel.Departments = await departmentManager.GetDepartments();
+
+            IsBusy = false;
+
             navgiationManager.RequestNavigate<OrganizationStrucutreControl>(RegionNames.Dashboard);
             OnPropertyChanged(nameof(CanNavigateBack));
+        });
+
+        public ICommand UpdateEmployeeDepartmentCommand => new Command(async parameter =>
+        {
+            IsBusy = true;
+
+            var user =  (User)parameter;
+
+            await accountManager.ChangeDepartment(user.Id, user.DepartmentId);
+
+            OrganizationStructureModel.Employees = await accountManager.GetUsers();
+
+            OnPropertyChanged(nameof(OrganizationStructureModel));
+
+            IsBusy = false;
         });
 
 
@@ -312,10 +352,19 @@ namespace ControlCenter.Client.ViewModels
                     {
                         var notifications = await notificationManager.GetNewNotifications();
 
-                        if(DisabledDepartments.Any())
+                        if (DisabledDepartments.Any())
                         {
-                            notifications = notifications.Where(n => DisabledDepartments.All(dn => dn.DepartmentId != n.Notification.DepartmentId)).ToList();
+                            var dsiabledNotifications = notifications.Where(n => DisabledDepartments.Any(dn => dn.DepartmentId == n.Notification.DepartmentId)).ToList();
+
+                            foreach (var item in dsiabledNotifications)
+                            {
+                                await notificationManager.MarkNotificationAsSeen(item.NotificationId);
+                                notifications.Remove(item);
+                            }
                         }
+
+                        if (!notifications.Any() || notifications.Count == NewNotificationsCount) 
+                            return;
 
                         UIThreadHelper.AccessUIThread(() =>
                         {

@@ -77,7 +77,7 @@ namespace ControlCenter.BL.Commands.Notifications
                 || !input.IsForEveryOne && input.TargetDepartments != null && input.TargetUserId != null)
                 throw new InvalidOperationException("Notification target must be set once");
 
-            if (input.Repeat == RepeatInterval.Never && input.DateTime.ToUniversalTime() < DateTimeOffset.UtcNow)
+            if (input.Repeat == RepeatInterval.Never && input.DateTime.ToUniversalTime() < DateTime.UtcNow.AddMinutes(-10))
                 throw new InvalidOperationException("Invalid notification date");
 
             if (input.TargetUserId != null)

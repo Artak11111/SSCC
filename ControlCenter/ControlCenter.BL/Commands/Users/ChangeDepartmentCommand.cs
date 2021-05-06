@@ -51,7 +51,7 @@ namespace ControlCenter.BL.Commands.Users
 
             user.DepartmentId = departmentId;
 
-            await departmentRepository.SaveChangesAsync();
+            await userRepository.SaveChangesAsync();
 
             await NotifyManagers(user, oldDepartment, newDepartment);
         }

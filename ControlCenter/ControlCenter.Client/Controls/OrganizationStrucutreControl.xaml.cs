@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using ControlCenter.Client.Managers.Models;
+using ControlCenter.Client.ViewModels;
+using System;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ControlCenter.Client.Controls
 {
@@ -23,6 +13,17 @@ namespace ControlCenter.Client.Controls
         public OrganizationStrucutreControl()
         {
             InitializeComponent();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext as DashboardViewModel == null || (dataGrid.SelectedItem as User).DepartmentId == Guid.Empty) return;
+
+            var user = dataGrid.SelectedItem as User;
+
+            if (user.Department.Id == user.DepartmentId) return;
+
+            (DataContext as DashboardViewModel).UpdateEmployeeDepartmentCommand.Execute(dataGrid.SelectedItem as User);
         }
     }
 }

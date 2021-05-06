@@ -2,8 +2,13 @@
 
 namespace ControlCenter.Entities
 {
-    public class UserNotification : EntityBase
+    public class UserNotification : EntityWithId
     {
+        public UserNotification()
+        {
+            Id = new Guid();
+        }
+        
         public Guid UserId { get; set; }
 
         public User User { get; set; }

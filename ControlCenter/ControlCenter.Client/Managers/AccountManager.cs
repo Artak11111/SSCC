@@ -80,7 +80,7 @@ namespace ControlCenter.Client.Managers
 
         public async Task<bool> ChangeDepartment(Guid userId, Guid newDepartmentId)
         {
-            var response = await client.SendAsync(HttpMethod.Post, $"{ChangeDepartmentUrl}?userId={userSession.UserId}&newDepartmentId={newDepartmentId}");
+            var response = await client.SendAsync(HttpMethod.Post, $"{ChangeDepartmentUrl}?userId={userId}&departmentId={newDepartmentId}");
 
             if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
