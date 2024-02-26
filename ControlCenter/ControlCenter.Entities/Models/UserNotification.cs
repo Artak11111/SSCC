@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace ControlCenter.Entities
+namespace ControlCenter.Entities.Models
 {
-    public class UserNotification : EntityWithId
+    public class UserNotification : EntityBase
     {
         public UserNotification()
         {
             Id = new Guid();
         }
-        
+
         public Guid UserId { get; set; }
 
         public User User { get; set; }
@@ -18,7 +18,7 @@ namespace ControlCenter.Entities
         public Notification Notification { get; set; }
 
         public bool IsNew { get; set; } = true;
-        
+
         public string Message { get; set; }
 
         public DateTimeOffset DateTime { get; set; }

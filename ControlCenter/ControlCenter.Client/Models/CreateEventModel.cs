@@ -79,7 +79,7 @@ namespace ControlCenter.Client.Models
 
         public RepeatInterval[] AvailableRepeatTypes => Enum.GetValues<RepeatInterval>();
 
-        private DateTime selectedDate = DateTime.Now;
+        private DateTime selectedDate = DateTime.UtcNow;
 
         public DateTime SelectedDate
         {
@@ -95,7 +95,7 @@ namespace ControlCenter.Client.Models
             set => Set(ref message, value);
         }
 
-        public bool CanCreateEvent => SelectedDate >= DateTime.Now 
+        public bool CanCreateEvent => SelectedDate >= DateTime.UtcNow
             && !string.IsNullOrWhiteSpace(Message);
 
 

@@ -1,6 +1,8 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.Entities;
+﻿using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Threading;
@@ -17,13 +19,15 @@ namespace ControlCenter.Server.Jobs
         private readonly IRepository<Notification> notificationRepository;
         private readonly IRepository<UserNotification> userNotificationRepository;
         private readonly IRepository<User> userRepository;
-        private readonly Semaphore semaphore = new Semaphore(1,1, "Syncronization_Object");
+        private readonly Semaphore semaphore = new Semaphore(1, 1, "Syncronization_Object");
 
         #endregion Fields
 
         #region Constructor
 
-        public NotificationSenderJob(IRepository<Notification> notificationRepository, IRepository<UserNotification> userNotificationRepository, IRepository<User> userRepository)
+        public NotificationSenderJob(IRepository<Notification> notificationRepository,
+            IRepository<UserNotification> userNotificationRepository,
+            IRepository<User> userRepository)
         {
             this.notificationRepository = notificationRepository;
             this.userNotificationRepository = userNotificationRepository;

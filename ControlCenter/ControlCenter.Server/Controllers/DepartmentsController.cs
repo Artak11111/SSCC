@@ -10,25 +10,25 @@ namespace ControlCenter.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class DepartmentsController : Controller
+    public class DepartmentsController : ControllerBase
     {
         #region Commands and Queries
 
-        private readonly ChangeDepartmentStatusCommand changeDepartmentStatusCommand;
-        private readonly GetDisabledDepartmentsQuery getDisabledDepartmentsQuery;
-        private readonly GetDepartmentsQuery getDepartmentsQuery;
-        private readonly TaskExecutor.TaskExecutor taskExecutor;
+        private readonly ChangeDepartmentStatusCommand ChangeDepartmentStatusCommand;
+        private readonly GetDisabledDepartmentsQuery GetDisabledDepartmentsQuery;
+        private readonly GetDepartmentsQuery GetDepartmentsQuery;
 
         #endregion Commands and Queries
 
         #region Constructor
 
-        public DepartmentsController(ChangeDepartmentStatusCommand changeDepartmentStatusCommand, GetDisabledDepartmentsQuery getDisabledDepartmentsQuery, GetDepartmentsQuery getDepartmentsQuery, TaskExecutor.TaskExecutor taskExecutor)
+        public DepartmentsController(ChangeDepartmentStatusCommand changeDepartmentStatusCommand, 
+            GetDisabledDepartmentsQuery getDisabledDepartmentsQuery, 
+            GetDepartmentsQuery getDepartmentsQuery)
         {
-            this.getDepartmentsQuery = getDepartmentsQuery;
-            this.changeDepartmentStatusCommand = changeDepartmentStatusCommand;
-            this.getDisabledDepartmentsQuery = getDisabledDepartmentsQuery;
-            this.taskExecutor = taskExecutor;
+            GetDepartmentsQuery = getDepartmentsQuery;
+            ChangeDepartmentStatusCommand = changeDepartmentStatusCommand;
+            GetDisabledDepartmentsQuery = getDisabledDepartmentsQuery;
         }
 
         #endregion Constructor
@@ -36,54 +36,24 @@ namespace ControlCenter.Server.Controllers
         #region Actions
 
         [HttpGet]
-        [Route("GetDepartments")]
-        public async Task<IActionResult> GetDepartments()
+        [Route("get-departments")]
+        public Task<IActionResult> GetDepartments()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await getDepartmentsQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(GetDepartmentsQuery);
         }
 
         [HttpGet]
-        [Route("GetDisabledDepartments")]
-        public async Task<IActionResult> GetDisabledDepartments()
+        [Route("get-disabled-departments")]
+        public Task<IActionResult> GetDisabledDepartments()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await getDisabledDepartmentsQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(GetDisabledDepartmentsQuery);
         }
 
         [HttpPost]
-        [Route("ChangeDepartmentStatus")]
-        public async Task<IActionResult> ChangeDepartmentStatus(Guid departmentId)
+        [Route("change-department-status")]
+        public Task<IActionResult> ChangeDepartmentStatus(Guid departmentId)
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                await changeDepartmentStatusCommand.Execute(departmentId);
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(ChangeDepartmentStatusCommand, departmentId);
         }
 
         #endregion Actions

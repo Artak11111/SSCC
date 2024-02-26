@@ -1,4 +1,5 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.Contracts.Contracts;
+
 using System;
 
 namespace ControlCenter.BL.UserInfoProvider

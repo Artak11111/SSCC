@@ -1,4 +1,5 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.Contracts.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,21 +9,21 @@ namespace ControlCenter.Server.Jobs
 {
     public class JobManager : IJobManager
     {
-        #region Fields
+        #region Properties
 
-        private readonly Dictionary<string, Timer> timers = new Dictionary<string, Timer>();
+        protected Dictionary<string, Timer> Timers { get; } = new Dictionary<string, Timer>();
 
-        #endregion Fields
+        #endregion Properties
 
         #region Methods
 
-        public void CreateJob(string key, int intervalInSeconds, Func<Task> job)
+        public void Create(string key, int intervalInSeconds, Func<Task> job)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
             if (job == null) throw new ArgumentNullException(nameof(job));
             if (intervalInSeconds < 1) throw new ArgumentException("Interval must be a positive integer.");
 
-            if (timers.ContainsKey(key)) throw new InvalidOperationException($"Job with key {key} already exists.");
+            if (Timers.ContainsKey(key)) throw new InvalidOperationException($"Job with key {key} already exists.");
 
             var timer = new Timer(intervalInSeconds * 1000);
             timer.Elapsed += async (s, e) =>
@@ -32,26 +33,27 @@ namespace ControlCenter.Server.Jobs
 
             timer.Enabled = true;
 
-            timers.Add(key, timer);
+            Timers.Add(key, timer);
         }
 
-        public bool ContainsJob(string key)
+        public bool Contains(string key)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
 
-            return timers.ContainsKey(key);
+            return Timers.ContainsKey(key);
         }
 
-        public bool StopJob(string key)
+        public bool Stop(string key)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            if (!timers.ContainsKey(key))
+
+            if (!Timers.ContainsKey(key))
                 return false;
 
-            var timer = timers[key];
+            var timer = Timers[key];
             timer.Enabled = false;
             timer.Dispose();
-            timers.Remove(key);
+            Timers.Remove(key);
 
             return true;
         }

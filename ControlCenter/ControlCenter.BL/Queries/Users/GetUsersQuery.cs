@@ -1,50 +1,39 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ControlCenter.BL.Queries.Common;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
 
 namespace ControlCenter.BL.Queries.Users
 {
-    public class GetUsersQuery
+    public class GetUsersQuery : QueryBase<List<User>>
     {
-        #region Fields
-
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
-        public GetUsersQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository)
+        public GetUsersQuery(IRepository<User> userRepository)
         {
-            this.userRepository = userRepository;
-            this.userInfoProvider = userInfoProvider;
+            UserRepository = userRepository;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<User> UserRepository { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task<List<User>> Execute()
+        public override Task<List<User>> ExecuteAsync()
         {
-            // validations
-            await ValidateInput();
-
-            return await userRepository.AsQueryable()
-                .Include(u=>u.Department)
-                .OrderBy(d=> d.Name)
+            return UserRepository.AsQueryable()
+                .Include(u => u.Department)
+                .OrderBy(d => d.Name)
                 .AsNoTracking()
                 .ToListAsync();
-        }
-
-        private async Task ValidateInput()
-        {
-            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId))
-                throw new BusinessException("User not found");
         }
 
         #endregion Methods

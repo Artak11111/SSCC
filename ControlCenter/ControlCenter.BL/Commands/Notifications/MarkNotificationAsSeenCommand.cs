@@ -1,50 +1,53 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.BL.Commands.Common;
 using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using System;
 using System.Threading.Tasks;
 
 namespace ControlCenter.BL.Commands.Notifications
 {
-    public class MarkNotificationAsSeenCommand
+    public class MarkNotificationAsSeenCommand : CommandBase<Guid>
     {
-        #region Fields
-
-        private readonly IRepository<UserNotification> userNotificationRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
-        public MarkNotificationAsSeenCommand(IUserInfoProvider userInfoProvider, IRepository<UserNotification> userNotificationRepository)
+        public MarkNotificationAsSeenCommand(IUserInfoProvider userInfoProvider, 
+            IRepository<UserNotification> userNotificationRepository)
         {
-            this.userNotificationRepository = userNotificationRepository;
-            this.userInfoProvider = userInfoProvider;
+            UserNotificationRepository = userNotificationRepository;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<UserNotification> UserNotificationRepository { get; }
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task Execute(Guid notificationId)
+        public override async Task ExecuteAsync(Guid notificationId)
         {
-            // validations
-            await ValidateInput(notificationId);
+            await ValidateAsync(notificationId);
 
-            var userNotification = await userNotificationRepository
-                .FirstOrDefaultAsync(un => un.NotificationId == notificationId && un.UserId == userInfoProvider.CurrentUserId);
+            var userNotification = await UserNotificationRepository
+                .FirstOrDefaultAsync(un => un.NotificationId == notificationId && un.UserId == UserInfoProvider.CurrentUserId);
 
             userNotification.IsNew = false;
 
-            await userNotificationRepository.SaveChangesAsync();
+            await UserNotificationRepository.SaveChangesAsync();
         }
 
-        private async Task ValidateInput(Guid notificationId)
+        protected override async Task ValidateAsync(Guid notificationId)
         {
             if (notificationId == default) throw new ArgumentNullException(nameof(notificationId));
 
-            if (!await userNotificationRepository.AnyAsync(un=> un.NotificationId == notificationId && un.UserId == userInfoProvider.CurrentUserId))
+            if (!await UserNotificationRepository.AnyAsync(un=> un.NotificationId == notificationId && un.UserId == UserInfoProvider.CurrentUserId))
                 throw new BusinessException("Notification not found");
         }
 

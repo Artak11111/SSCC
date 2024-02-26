@@ -1,4 +1,4 @@
-﻿using ControlCenter.Entities;
+﻿using ControlCenter.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +8,10 @@ namespace ControlCenter.DB.Configurations
     {
         public void Configure(EntityTypeBuilder<DisabledDepartment> builder)
         {
-            builder.HasKey(i => new { i.UserId, i.DepartmentId });
+            builder.HasKey(i => i.Id);
+
+            builder.HasIndex(i => new { i.DepartmentId, i.UserId })
+                .IsUnique();
 
             builder
                 .HasOne(un => un.User)

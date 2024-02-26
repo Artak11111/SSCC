@@ -1,42 +1,49 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.BL.Authentication;
+using ControlCenter.BL.Commands.Common;
 using ControlCenter.BL.Commands.Users.Model;
+using ControlCenter.BL.Commands.Users.Models;
 using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ControlCenter.BL.Commands.Users
 {
-    public class AuthenticateUserCommand
+    public class AuthenticateUserCommand : CommandBase<AuthenticateUserInputModel, AuthenticateUserResult>
     {
-        #region Fields
-
-        private readonly IRepository<User> userRepository;
-
-        #endregion Fields
-
         #region Constructor
 
         public AuthenticateUserCommand(IRepository<User> userRepository)
         {
-            this.userRepository = userRepository;
+            this.UserRepository = userRepository;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<User> UserRepository { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task<AuthenticateUserResult> Execute(string email, string passwordHash)
+        public override async Task<AuthenticateUserResult> ExecuteAsync(AuthenticateUserInputModel input)
         {
-            // validations
-            await ValidateInput(email, passwordHash);
+            await ValidateAsync(input);
 
-            var user = await userRepository
-                .Include(u=>u.Department)
-                .FirstOrDefaultAsync(u => u.Email == email && (u.PasswordHash == null || u.PasswordHash == passwordHash));
+            var user = await UserRepository
+                .Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Email == input.Email && (u.PasswordHash == null || u.PasswordHash == input.Password));
 
             var claims = new List<Claim>
             {
@@ -46,6 +53,17 @@ namespace ControlCenter.BL.Commands.Users
                 new Claim("DepartmentId", user.Department.Id.ToString()),
             };
 
+            var userIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            var now = DateTime.UtcNow;
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: userIdentity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
             return new AuthenticateUserResult
             {
                 UserId = user.Id,
@@ -53,21 +71,21 @@ namespace ControlCenter.BL.Commands.Users
                 Email = user.Email,
                 DepartmentId = user.DepartmentId,
                 DepartmentName = user.Department.Name,
-                UserIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType)
+                Token = encodedJwt
             };
         }
 
-        private async Task ValidateInput(string email, string passwordHash)
+        protected override async Task ValidateAsync(AuthenticateUserInputModel input)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (string.IsNullOrEmpty(input.Email)) throw new ArgumentNullException(nameof(input.Email));
 
-            var user = await userRepository.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await UserRepository.FirstOrDefaultAsync(u => u.Email == input.Email);
 
             if (user == null)
-                throw new BusinessException($"User with email {email} not found");
+                throw new BusinessException($"User with email {input.Email} not found");
 
-            if (user.PasswordHash != null && user.PasswordHash != passwordHash)
-               throw new BusinessException("Invalid email or password");
+            if (user.PasswordHash != null && user.PasswordHash != input.Password)
+                throw new BusinessException("Invalid email or password");
         }
 
         #endregion Methods

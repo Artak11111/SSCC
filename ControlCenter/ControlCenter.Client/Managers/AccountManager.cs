@@ -21,10 +21,10 @@ namespace ControlCenter.Client.Managers
 
         private const string ControllerName = "Account";
 
-        private readonly string SignInUrl = $"{ControllerName}/SignIn";
-        private readonly string ChangePasswordUrl = $"{ControllerName}/ChangePassword";
-        private readonly string ChangeDepartmentUrl = $"{ControllerName}/ChangeDepartment";
-        private readonly string GetUsersUrl = $"{ControllerName}/GetUsers";
+        private readonly string SignInUrl = $"{ControllerName}/sign-in";
+        private readonly string ChangePasswordUrl = $"{ControllerName}/change-password";
+        private readonly string ChangeDepartmentUrl = $"{ControllerName}/change-department";
+        private readonly string GetUsersUrl = $"{ControllerName}/get-users";
 
         #endregion Fields
 

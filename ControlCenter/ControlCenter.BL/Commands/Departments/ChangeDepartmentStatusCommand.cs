@@ -1,63 +1,68 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.BL.Commands.Common;
 using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using System;
 using System.Threading.Tasks;
 
 namespace ControlCenter.BL.Commands.Departments
 {
-    public class ChangeDepartmentStatusCommand
+    public class ChangeDepartmentStatusCommand : CommandBase<Guid>
     {
-        #region Fields
-
-        private readonly IRepository<DisabledDepartment> disabledDepartmentRepository;
-        private readonly IRepository<Department> departmentRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
-        public ChangeDepartmentStatusCommand(IUserInfoProvider userInfoProvider, IRepository<Department> departmentRepository, IRepository<DisabledDepartment> disabledDepartmentRepository)
+        public ChangeDepartmentStatusCommand(IUserInfoProvider userInfoProvider, 
+            IRepository<Department> departmentRepository, 
+            IRepository<DisabledDepartment> disabledDepartmentRepository)
         {
-            this.disabledDepartmentRepository = disabledDepartmentRepository;
-            this.departmentRepository = departmentRepository;
-            this.userInfoProvider = userInfoProvider;
+            DisabledDepartmentRepository = disabledDepartmentRepository;
+            DepartmentRepository = departmentRepository;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<DisabledDepartment> DisabledDepartmentRepository { get; }
+
+        protected IRepository<Department> DepartmentRepository { get; }
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task Execute(Guid departmentId)
+        public override async Task ExecuteAsync(Guid departmentId)
         {
-            // validations
-            await ValidateInput(departmentId);
+            await ValidateAsync(departmentId);
 
-            var disabledDepartment = await disabledDepartmentRepository
+            var disabledDepartment = await DisabledDepartmentRepository
                 .FirstOrDefaultAsync(d => d.DepartmentId == departmentId);
 
             if (disabledDepartment != null)
             {
-                disabledDepartmentRepository.Remove(disabledDepartment);
+                DisabledDepartmentRepository.Remove(disabledDepartment);
             }
             else
             {
-                disabledDepartmentRepository.Add(new DisabledDepartment
+                DisabledDepartmentRepository.Add(new DisabledDepartment
                 {
                     DepartmentId = departmentId,
-                    UserId = userInfoProvider.CurrentUserId
+                    UserId = UserInfoProvider.CurrentUserId
                 });
             }
 
-            await disabledDepartmentRepository.SaveChangesAsync();
+            await DisabledDepartmentRepository.SaveChangesAsync();
         }
 
-        private async Task ValidateInput(Guid departmentId)
+        protected override async Task ValidateAsync(Guid departmentId)
         {
             if (departmentId == default) throw new ArgumentNullException(nameof(departmentId));
 
-            if (!await departmentRepository.AnyAsync(d =>d.Id== departmentId))
+            if (!await DepartmentRepository.AnyAsync(d =>d.Id == departmentId))
                 throw new BusinessException("Department not found");
         }
 

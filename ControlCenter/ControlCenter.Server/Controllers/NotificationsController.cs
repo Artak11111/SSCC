@@ -12,29 +12,31 @@ namespace ControlCenter.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class NotificationsController : Controller
+    public class NotificationsController : ControllerBase
     {
         #region Commands and Queries
 
-        private readonly GetNotificationsQuery getNotificationsQuery;
-        private readonly GetNewNotificationsQuery getNewNotificationsQuery;
-        private readonly CheckForNewNotificationsQuery checkForNewNotificationsQuery;
-        private readonly CreateNotificationCommand createNotificationCommand;
-        private readonly MarkNotificationAsSeenCommand markNotificationAsSeenCommand;
-        private readonly TaskExecutor.TaskExecutor taskExecutor;
+        private readonly GetNotificationsQuery GetNotificationsQuery;
+        private readonly GetNewNotificationsQuery GetNewNotificationsQuery;
+        private readonly CheckForNewNotificationsQuery CheckForNewNotificationsQuery;
+        private readonly CreateNotificationCommand CreateNotificationCommand;
+        private readonly MarkNotificationAsSeenCommand MarkNotificationAsSeenCommand;
 
         #endregion Commands and Queries
 
         #region Constructor
 
-        public NotificationsController(GetNewNotificationsQuery getNewNotificationsQuery, CheckForNewNotificationsQuery checkForNewNotificationsQuery, CreateNotificationCommand createNotificationCommand, MarkNotificationAsSeenCommand markNotificationAsSeenCommand, GetNotificationsQuery getNotificationsQuery, TaskExecutor.TaskExecutor taskExecutor)
+        public NotificationsController(GetNewNotificationsQuery getNewNotificationsQuery, 
+            CheckForNewNotificationsQuery checkForNewNotificationsQuery, 
+            CreateNotificationCommand createNotificationCommand, 
+            MarkNotificationAsSeenCommand markNotificationAsSeenCommand, 
+            GetNotificationsQuery getNotificationsQuery)
         {
-            this.getNotificationsQuery = getNotificationsQuery;
-            this.getNewNotificationsQuery = getNewNotificationsQuery;
-            this.createNotificationCommand = createNotificationCommand;
-            this.markNotificationAsSeenCommand = markNotificationAsSeenCommand;
-            this.checkForNewNotificationsQuery = checkForNewNotificationsQuery;
-            this.taskExecutor = taskExecutor;
+            GetNotificationsQuery = getNotificationsQuery;
+            GetNewNotificationsQuery = getNewNotificationsQuery;
+            CreateNotificationCommand = createNotificationCommand;
+            MarkNotificationAsSeenCommand = markNotificationAsSeenCommand;
+            CheckForNewNotificationsQuery = checkForNewNotificationsQuery;
         }
 
         #endregion Constructor
@@ -42,88 +44,38 @@ namespace ControlCenter.Server.Controllers
         #region Actions
 
         [HttpGet]
-        [Route("GetNotifications")]
-        public async Task<IActionResult> GetNotifications()
+        [Route("get-notifications")]
+        public Task<IActionResult> GetNotifications()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await getNotificationsQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(GetNotificationsQuery);
         }
 
         [HttpGet]
-        [Route("GetNewNotifications")]
-        public async Task<IActionResult> GetNewNotifications()
+        [Route("get-new-notifications")]
+        public Task<IActionResult> GetNewNotifications()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await getNewNotificationsQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(GetNewNotificationsQuery);
         }
 
         [HttpGet]
-        [Route("CheckForNewNotifications")]
-        public async Task<IActionResult> CheckForNewNotifications()
+        [Route("check-for-new-notifications")]
+        public Task<IActionResult> CheckForNewNotifications()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await checkForNewNotificationsQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(CheckForNewNotificationsQuery);
         }
 
         [HttpPost]
-        [Route("MarkNotificationAsSeen")]
-        public async Task<IActionResult> MarkNotificationAsSeen(Guid noticitationId)
+        [Route("mark-notification-as-seen")]
+        public Task<IActionResult> MarkNotificationAsSeen(Guid noticitationId)
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                await markNotificationAsSeenCommand.Execute(noticitationId);
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(MarkNotificationAsSeenCommand, noticitationId);
         }
 
         [HttpPost]
-        [Route("CreateNotification")]
-        public async Task<IActionResult> CreateNotification(string input)
+        [Route("create-notification")]
+        public Task<IActionResult> CreateNotification(string input)
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                await createNotificationCommand.Execute(JsonConvert.DeserializeObject<CreateNotificationInputModel>(input));
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(CreateNotificationCommand, JsonConvert.DeserializeObject<CreateNotificationInputModel>(input));
         }
 
         #endregion Actions

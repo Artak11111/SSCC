@@ -1,11 +1,9 @@
 using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using ControlCenter.Abstractions;
 using ControlCenter.BL.UserInfoProvider;
 using ControlCenter.DB;
 using ControlCenter.Server.Middlewares;
-using ControlCenter.Server.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,7 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ControlCenter.Server.Jobs;
-using System.Threading.Tasks;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.BL.Authentication;
 
 namespace ControlCenter.Server
 {
@@ -28,6 +27,7 @@ namespace ControlCenter.Server
         }
 
         public IConfiguration Configuration { get; }
+
         public IContainer ApplicationContainer { get; set; }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -52,14 +52,12 @@ namespace ControlCenter.Server
                 });
 
             // adding db context 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<ControlCenterDbContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]),
                 ServiceLifetime.Transient);
 
-
             // adding scoped services
             services.AddScoped<NotificationSenderJob>();
-            services.AddScoped<TaskExecutor.TaskExecutor>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
             services.AddSingleton<IJobManager, JobManager>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -92,7 +90,7 @@ namespace ControlCenter.Server
             var jobManager = serviceProvider.GetService<IJobManager>();
             var notificationSenderJob = serviceProvider.GetService<NotificationSenderJob>();
 
-            jobManager.CreateJob(NotificationSenderJob.Key, 5, notificationSenderJob.Execute);
+            jobManager.Create(NotificationSenderJob.Key, 5, notificationSenderJob.Execute);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

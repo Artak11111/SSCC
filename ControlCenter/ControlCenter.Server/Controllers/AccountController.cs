@@ -1,38 +1,37 @@
 ﻿using ControlCenter.BL.Commands.Users;
-using ControlCenter.Server.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using ControlCenter.BL.Queries.Users;
+using ControlCenter.BL.Commands.Users.Models;
 
 namespace ControlCenter.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         #region Commands and Queries
 
-        private readonly AuthenticateUserCommand authenticateUserCommand;
-        private readonly ChangePasswordCommand changePasswordCommand;
-        private readonly ChangeDepartmentCommand changeDepartmentCommand;
-        private readonly GetUsersQuery getUsersQuery;
-        private readonly TaskExecutor.TaskExecutor taskExecutor;
+        private readonly AuthenticateUserCommand AuthenticateUserCommand;
+        private readonly ChangePasswordCommand ChangePasswordCommand;
+        private readonly ChangeDepartmentCommand ChangeDepartmentCommand;
+        private readonly GetUsersQuery GetUsersQuery;
 
         #endregion Commands and Queries
 
         #region Constructor
 
-        public AccountController(GetUsersQuery getUsersQuery, ChangeDepartmentCommand changeDepartmentCommand, ChangePasswordCommand changePasswordCommand, AuthenticateUserCommand authenticateUserCommand, TaskExecutor.TaskExecutor taskExecutor)
+        public AccountController(GetUsersQuery getUsersQuery, 
+            ChangeDepartmentCommand changeDepartmentCommand, 
+            ChangePasswordCommand changePasswordCommand, 
+            AuthenticateUserCommand authenticateUserCommand)
         {
-            this.authenticateUserCommand = authenticateUserCommand;
-            this.changePasswordCommand = changePasswordCommand;
-            this.changeDepartmentCommand = changeDepartmentCommand;
-            this.getUsersQuery = getUsersQuery;
-            this.taskExecutor = taskExecutor;
+            AuthenticateUserCommand = authenticateUserCommand;
+            ChangePasswordCommand = changePasswordCommand;
+            ChangeDepartmentCommand = changeDepartmentCommand;
+            GetUsersQuery = getUsersQuery;
         }
 
         #endregion Constructor
@@ -40,96 +39,47 @@ namespace ControlCenter.Server.Controllers
         #region Actions
 
         [HttpPost]
-        [Route("SignIn")]
-        public async Task<IActionResult> SignIn(string email, string passwordHash)
+        [Route("sign-in")]
+        public Task<IActionResult> SignIn(string email, string passwordHash)
         {
-            var result = await taskExecutor.Execute(async () =>
+            return Run(AuthenticateUserCommand, new AuthenticateUserInputModel
             {
-                var authenticationResult = await authenticateUserCommand.Execute(email, passwordHash);
-
-                var now = DateTime.UtcNow;
-                var jwt = new JwtSecurityToken(
-                        issuer: AuthOptions.ISSUER,
-                        audience: AuthOptions.AUDIENCE,
-                        notBefore: now,
-                        claims: authenticationResult.UserIdentity.Claims,
-                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                return new Models.SignInResult
-                {
-                    UserId = authenticationResult.UserId,
-                    Name = authenticationResult.Name,
-                    DepartmentId = authenticationResult.DepartmentId,
-                    DepartmentName = authenticationResult.DepartmentName,
-                    Email = authenticationResult.Email,
-                    Token = encodedJwt
-                };
+                Email = email,
+                Password = passwordHash
             });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
         }
 
         [HttpPost]
-        [Route("ChangePassword")]
+        [Route("change-password")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(string oldPasswordHash, string newPasswordHash)
+        public Task<IActionResult> ChangePassword(string oldPasswordHash, string newPasswordHash)
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                await changePasswordCommand.Execute(oldPasswordHash, newPasswordHash);
+            return Run(ChangePasswordCommand, new ChangePasswordInputModel 
+            { 
+                NewPassword = newPasswordHash,
+                OldPassword = oldPasswordHash
             });
-
-            if (result.ErrorMessage == null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.ErrorMessage);
         }
 
         [HttpPost]
-        [Route("ChangeDepartment")]
+        [Route("change-department")]
         [Authorize(Roles = "Management")]
-        public async Task<IActionResult> ChangeDepartment(Guid userId, Guid departmentId)
+        public Task<IActionResult> ChangeDepartment(Guid userId, Guid departmentId)
         {
-            var result = await taskExecutor.Execute(async () =>
+            return Run(ChangeDepartmentCommand, new ChangeDepartmentInputModel
             {
-                await changeDepartmentCommand.Execute(userId, departmentId);
+                NewDepartmentId = userId,
+                OldDepartmentId = departmentId
             });
-
-            if (result.ErrorMessage == null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.ErrorMessage);
         }
 
 
         [HttpGet]
-        [Route("GetUsers")]
-        public async Task<IActionResult> GetUsers()
+        [Route("get-users")]
+        public Task<IActionResult> GetUsers()
         {
-            var result = await taskExecutor.Execute(async () =>
-            {
-                return await getUsersQuery.Execute();
-            });
-
-            if (result.ErrorMessage == null)
-            {
-                return Json(result.Result);
-            }
-
-            return BadRequest(result.ErrorMessage);
+            return Run(GetUsersQuery);
         }
-
 
         #endregion Actions
     }

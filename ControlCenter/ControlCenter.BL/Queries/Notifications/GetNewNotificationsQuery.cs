@@ -1,44 +1,43 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+using ControlCenter.BL.Queries.Common;
 
 namespace ControlCenter.BL.Queries.Notifications
 {
-    public class GetNewNotificationsQuery
+    public class GetNewNotificationsQuery : QueryBase<List<UserNotification>>
     {
-        #region Fields
-
-        private readonly IRepository<UserNotification> userNotificationRepository;
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
         public GetNewNotificationsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<UserNotification> userNotificationRepository)
         {
-            this.userNotificationRepository = userNotificationRepository;
-            this.userRepository = userRepository;
-            this.userInfoProvider = userInfoProvider;
+            UserNotificationRepository = userNotificationRepository;
+            UserRepository = userRepository;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<User> UserRepository { get; }
+
+        protected IRepository<UserNotification> UserNotificationRepository { get; }
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task<List<UserNotification>> Execute()
+        public override async Task<List<UserNotification>> ExecuteAsync()
         {
-            // validations
-            await ValidateInput();
-
-            var result = await userNotificationRepository
+            var result = await UserNotificationRepository
                 .Include(un => un.Notification.Department)
-                .Where(un => un.UserId == userInfoProvider.CurrentUserId && un.IsNew)
+                .Where(un => un.UserId == UserInfoProvider.CurrentUserId && un.IsNew)
                 .OrderByDescending(n => n.DateTime)
                 .AsNoTracking()
                 .ToListAsync();
@@ -46,12 +45,6 @@ namespace ControlCenter.BL.Queries.Notifications
             result.ForEach(n => n.Notification.TargetUsers = null);
 
             return result;
-        }
-
-        private async Task ValidateInput()
-        {
-            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId))
-                throw new BusinessException("User not found");
         }
 
         #endregion Methods

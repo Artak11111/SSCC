@@ -1,5 +1,5 @@
 ﻿using System;
-using ControlCenter.Entities;
+using ControlCenter.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

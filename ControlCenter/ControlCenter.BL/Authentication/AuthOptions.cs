@@ -1,12 +1,13 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
 
-namespace ControlCenter.Server.Authentication
+namespace ControlCenter.BL.Authentication
 {
     public class AuthOptions
     {
-        public const string ISSUER = "SolarSystemServer"; 
-        public const string AUDIENCE = "SolarSystemClient"; 
+        public const string ISSUER = "SolarSystemServer";
+        public const string AUDIENCE = "SolarSystemClient";
         public const int LIFETIME = 60;
         private const string KEY = "Key_3284789SADdasdAS_$$%sadias";
 

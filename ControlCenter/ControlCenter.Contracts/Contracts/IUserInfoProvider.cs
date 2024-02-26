@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ControlCenter.Abstractions
+﻿namespace ControlCenter.Contracts.Contracts
 {
     public interface IUserInfoProvider
     {

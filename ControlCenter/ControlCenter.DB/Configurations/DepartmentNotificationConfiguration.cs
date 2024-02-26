@@ -1,4 +1,4 @@
-﻿using ControlCenter.Entities;
+﻿using ControlCenter.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +8,9 @@ namespace ControlCenter.DB.Configurations
     {
         public void Configure(EntityTypeBuilder<DepartmentNotification> builder)
         {
-            builder.HasKey(i => new { i .DepartmentId, i.NotificationId });
+            builder.HasKey(i => i.Id);
+            builder.HasIndex(i => new { i.DepartmentId, i.NotificationId })
+                .IsUnique();
         }
     }
 }
