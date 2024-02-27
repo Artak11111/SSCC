@@ -1,4 +1,6 @@
-﻿namespace ControlCenter.Contracts.Contracts
+﻿using System;
+
+namespace ControlCenter.Contracts.Contracts
 {
     public interface IUserInfoProvider
     {

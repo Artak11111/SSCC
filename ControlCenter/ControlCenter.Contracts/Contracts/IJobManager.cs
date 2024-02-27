@@ -1,4 +1,7 @@
-﻿namespace ControlCenter.Contracts.Contracts
+﻿using System;
+using System.Threading.Tasks;
+
+namespace ControlCenter.Contracts.Contracts
 {
     public interface IJobManager
     {

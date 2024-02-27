@@ -1,4 +1,6 @@
-﻿namespace ControlCenter.Contracts.Contracts
+﻿using System.Threading.Tasks;
+
+namespace ControlCenter.Contracts.Contracts
 {
     public interface ICommand
     {
