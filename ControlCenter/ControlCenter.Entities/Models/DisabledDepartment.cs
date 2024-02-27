@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ControlCenter.Entities
+namespace ControlCenter.Entities.Models
 {
     public class DisabledDepartment : EntityBase
     {

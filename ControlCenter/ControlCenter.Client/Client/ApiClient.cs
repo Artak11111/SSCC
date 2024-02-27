@@ -10,7 +10,7 @@ namespace ControlCenter.Client.Client
     {
         #region Fields
 
-        private const string BaseUrl = "https://localhost:5001/";
+        private const string BaseUrl = "http://localhost:55528/";
 
         private readonly HttpClient httpClient;
 
@@ -20,7 +20,15 @@ namespace ControlCenter.Client.Client
 
         public ApiClient()
         {
-            httpClient = new HttpClient
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
+
+            httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri(BaseUrl)
             };

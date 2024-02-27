@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ControlCenter.Entities
+namespace ControlCenter.Entities.Models
 {
-    public class Notification : EntityWithId
+    public class Notification : EntityBase
     {
         public string Message { get; set; }
 
@@ -12,7 +12,7 @@ namespace ControlCenter.Entities
         public DateTimeOffset? NextScheduledNotificatinoDateTime { get; set; }
 
         public Guid DepartmentId { get; set; }
-        
+
         public Department Department { get; set; }
 
 

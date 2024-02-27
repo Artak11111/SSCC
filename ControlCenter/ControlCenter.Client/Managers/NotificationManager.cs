@@ -20,12 +20,12 @@ namespace ControlCenter.Client.Managers
 
         private const string ControllerName = "Notifications";
 
-        private readonly string GetNotificationsUrl = $"{ControllerName}/GetNotifications";
-        private readonly string GetNewNotificationsUrl = $"{ControllerName}/GetNewNotifications";
-        private readonly string CheckForNewNotificationsUrl = $"{ControllerName}/CheckForNewNotifications";
+        private readonly string GetNotificationsUrl = $"{ControllerName}/get-notifications";
+        private readonly string GetNewNotificationsUrl = $"{ControllerName}/get-new-notifications";
+        private readonly string CheckForNewNotificationsUrl = $"{ControllerName}/check-for-new-notifications";
 
-        private readonly string MarkNotificationAsSeenUrl = $"{ControllerName}/MarkNotificationAsSeen";
-        private readonly string CreateNotificationUrl = $"{ControllerName}/CreateNotification";
+        private readonly string MarkNotificationAsSeenUrl = $"{ControllerName}/mark-notification-as-seen";
+        private readonly string CreateNotificationUrl = $"{ControllerName}/create-notification";
 
         #endregion Fields
 

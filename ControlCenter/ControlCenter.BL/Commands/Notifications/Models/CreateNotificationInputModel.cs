@@ -1,4 +1,5 @@
-﻿using ControlCenter.Entities;
+﻿using ControlCenter.Entities.Models;
+
 using System;
 using System.Collections.Generic;
 

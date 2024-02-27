@@ -1,57 +1,64 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+﻿using ControlCenter.BL.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using ControlCenter.BL.Commands.Common;
+using ControlCenter.BL.Commands.Users.Models;
+using ControlCenter.Entities.Models;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.BL.Commands.Notifications;
 
 namespace ControlCenter.BL.Commands.Users
 {
-    public class ChangePasswordCommand
+    public class ChangePasswordCommand : CommandBase<ChangePasswordInputModel>
     {
-        #region Fields
-
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
         public ChangePasswordCommand(IRepository<User> userRepository, IUserInfoProvider userInfoProvider)
         {
-            this.userRepository = userRepository;
-            this.userInfoProvider = userInfoProvider;
+            UserRepository = userRepository;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        protected IRepository<User> UserRepository { get; }
+
+        protected IRepository<Department> DepartmentRepository { get; }
+
+        protected CreateNotificationCommand CreateNotificationCommand { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task Execute(string oldPasswordHash, string newPasswordHash)
+        public override async Task ExecuteAsync(ChangePasswordInputModel input)
         {
-            // validations
-            await ValidateInput(oldPasswordHash, newPasswordHash);
+            await ValidateAsync(input);
 
-            var user = await userRepository
+            var user = await UserRepository
                 .Include(u => u.Department)
-                .FirstOrDefaultAsync(u => u.Id == userInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash));
+                .FirstOrDefaultAsync(u => u.Id == UserInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == input.OldPassword));
 
-            user.PasswordHash = newPasswordHash;
+            user.PasswordHash = input.NewPassword;
 
-            await userRepository.SaveChangesAsync();
+            await UserRepository.SaveChangesAsync();
         }
 
-        private async Task ValidateInput(string oldPasswordHash, string newPasswordHash)
+        protected override async Task ValidateAsync(ChangePasswordInputModel input)
         {
-            if (string.IsNullOrEmpty(newPasswordHash)) throw new ArgumentNullException(nameof(newPasswordHash));
+            if (string.IsNullOrEmpty(input.NewPassword)) throw new ArgumentNullException(nameof(input.NewPassword));
 
-            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == oldPasswordHash)))
+            if (!await UserRepository.AnyAsync(u => u.Id == UserInfoProvider.CurrentUserId && (u.PasswordHash == null || u.PasswordHash == input.OldPassword)))
             {
-                if (string.IsNullOrEmpty(oldPasswordHash))
-                    throw new BusinessException($"User with not found");
-                else
-                    throw new BusinessException("Invalid id or password");
+                if (string.IsNullOrEmpty(input.OldPassword))
+                    throw new BusinessException($"User not found");
+                    
+                throw new BusinessException("Invalid id or password");
             }
         }
 

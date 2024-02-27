@@ -1,45 +1,53 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.BL.Commands.Common;
 using ControlCenter.BL.Commands.Notifications.Models;
 using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using System;
 using System.Threading.Tasks;
 
 namespace ControlCenter.BL.Commands.Notifications
 {
-    public class CreateNotificationCommand
+    public class CreateNotificationCommand : CommandBase<CreateNotificationInputModel>
     {
-        #region Fields
-
-        private readonly IRepository<Department> departamentRepository;
-        private readonly IRepository<Notification> notificationRepository;
-        private readonly IRepository<DepartmentNotification> departmentNotificationRepository;
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
-        public CreateNotificationCommand(IRepository<Department> departamentRepository, IRepository<Notification> notificationRepository, IRepository<User> userRepository, IUserInfoProvider userInfoProvider, IRepository<DepartmentNotification> departmentNotificationRepository)
+        public CreateNotificationCommand(IRepository<Department> departmentRepository, 
+            IRepository<Notification> notificationRepository, 
+            IRepository<User> userRepository, 
+            IRepository<DepartmentNotification> departmentNotificationRepository,
+            IUserInfoProvider userInfoProvider)
         {
-            this.notificationRepository = notificationRepository;
-            this.userRepository = userRepository;
-            this.departmentNotificationRepository = departmentNotificationRepository;
-            this.departamentRepository = departamentRepository;
-            this.userInfoProvider = userInfoProvider;
+            this.NotificationRepository = notificationRepository;
+            this.UserRepository = userRepository;
+            this.DepartmentNotificationRepository = departmentNotificationRepository;
+            this.DepartmentRepository = departmentRepository;
+            this.UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<Notification> NotificationRepository { get; }
+
+        protected IRepository<User> UserRepository { get; }
+
+        protected IRepository<DepartmentNotification> DepartmentNotificationRepository { get; }
+
+        protected IRepository<Department> DepartmentRepository { get; }
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task Execute(CreateNotificationInputModel input)
+        public override async Task ExecuteAsync(CreateNotificationInputModel input)
         {
-            // validations
-            await ValidateInput(input);
+            await ValidateAsync(input);
 
-            // creating notification
             var notification = new Notification
             {
                 Id = new Guid(),
@@ -47,27 +55,27 @@ namespace ControlCenter.BL.Commands.Notifications
                 NextScheduledNotificatinoDateTime = input.DateTime.ToUniversalTime(),
                 IsForEveryOne = input.IsForEveryOne,
                 TargetUserId = input.TargetUserId,
-                DepartmentId = userInfoProvider.CurrentDepartmentId,
+                DepartmentId = UserInfoProvider.CurrentDepartmentId,
                 Repeat = input.Repeat
             };
 
-            notificationRepository.Add(notification);
+            NotificationRepository.Add(notification);
 
-            await notificationRepository.SaveChangesAsync();
+            await NotificationRepository.SaveChangesAsync();
 
             foreach (var departmentId in input.TargetDepartments ?? new System.Collections.Generic.List<Guid>())
             {
-                departmentNotificationRepository.Add(new DepartmentNotification
+                DepartmentNotificationRepository.Add(new DepartmentNotification
                 {
                     DepartmentId = departmentId,
                     NotificationId = notification.Id
                 });
             }
 
-            await departmentNotificationRepository.SaveChangesAsync();
+            await DepartmentNotificationRepository.SaveChangesAsync();
         }
 
-        private async Task ValidateInput(CreateNotificationInputModel input)
+        protected override async Task ValidateAsync(CreateNotificationInputModel input)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
 
@@ -82,16 +90,16 @@ namespace ControlCenter.BL.Commands.Notifications
 
             if (input.TargetUserId != null)
             {
-                if (!await userRepository.AnyAsync(u => u.Id == input.TargetUserId))
+                if (!await UserRepository.AnyAsync(u => u.Id == input.TargetUserId))
                     throw new BusinessException("Target user not found");
+
+                return;
             }
-            else
+
+            foreach (var departamentId in input.TargetDepartments ?? new System.Collections.Generic.List<Guid>())
             {
-                foreach (var departamentId in input.TargetDepartments ?? new System.Collections.Generic.List<Guid>())
-                {
-                    if (!await departamentRepository.AnyAsync(d => d.Id == departamentId))
-                        throw new BusinessException("One of target departments not found");
-                }
+                if (!await DepartmentRepository.AnyAsync(d => d.Id == departamentId))
+                    throw new BusinessException($"One of target departments not found. Department Id: {departamentId}");
             }
         }
 

@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace ControlCenter.DB
 {
-    internal class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    internal class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ControlCenterDbContext>
     {
-        public AppDbContext CreateDbContext(string[] args)
+        public ControlCenterDbContext CreateDbContext(string[] args)
         {
-            var builder = new DbContextOptionsBuilder<AppDbContext>();
+            var builder = new DbContextOptionsBuilder<ControlCenterDbContext>();
             string connectionString = "Server=(localdb)\\mssqllocaldb;Initial Catalog=ControlCenter_Db;Trusted_Connection=True;";
 
             builder.UseSqlServer(connectionString);
             builder.EnableSensitiveDataLogging();
 
-            return new AppDbContext(builder.Options);
+            return new ControlCenterDbContext(builder.Options);
         }
     }
 }

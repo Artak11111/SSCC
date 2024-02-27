@@ -1,5 +1,5 @@
 ﻿using System;
-using ControlCenter.Entities;
+using ControlCenter.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -271,7 +271,7 @@ namespace ControlCenter.DB.Configurations
         {
             var r = new Random();
 
-            return DateTime.Now.Date.AddYears(-r.Next(18, 35))
+            return DateTime.UtcNow.Date.AddYears(-r.Next(18, 35))
                 .AddDays(r.Next(0, 365));
         }
     }

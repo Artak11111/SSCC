@@ -19,9 +19,9 @@ namespace ControlCenter.Client.Managers
 
         private const string ControllerName = "Departments";
 
-        private readonly string GetDepartmentsUrl = $"{ControllerName}/GetDepartments";
-        private readonly string GetDisabledDepartmentsUrl = $"{ControllerName}/GetDisabledDepartments";
-        private readonly string ChangeDepartmentStatusUrl = $"{ControllerName}/ChangeDepartmentStatus";
+        private readonly string GetDepartmentsUrl = $"{ControllerName}/get-departments";
+        private readonly string GetDisabledDepartmentsUrl = $"{ControllerName}/get-disabled-departments";
+        private readonly string ChangeDepartmentStatusUrl = $"{ControllerName}/change-department-status";
 
         #endregion Fields
 

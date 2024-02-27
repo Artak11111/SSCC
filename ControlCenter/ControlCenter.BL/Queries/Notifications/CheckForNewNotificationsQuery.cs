@@ -1,46 +1,40 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
+﻿using ControlCenter.BL.Queries.Common;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.Entities.Models;
+
 using System.Threading.Tasks;
 
 namespace ControlCenter.BL.Queries.Notifications
 {
-    public class CheckForNewNotificationsQuery
+    public class CheckForNewNotificationsQuery : QueryBase<bool>
     {
-        #region Fields
-
-        private readonly IRepository<UserNotification> userNotificationRepository;
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
         public CheckForNewNotificationsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<UserNotification> userNotificationRepository)
         {
-            this.userNotificationRepository = userNotificationRepository;
-            this.userRepository = userRepository;
-            this.userInfoProvider = userInfoProvider;
+            UserNotificationRepository = userNotificationRepository;
+            UserRepository = userRepository;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<User> UserRepository { get; }
+
+        protected IRepository<UserNotification> UserNotificationRepository { get; }
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task<bool> Execute()
+        public override Task<bool> ExecuteAsync()
         {
-            // validations
-            await ValidateInput();
-
-            return await userNotificationRepository
-                .AnyAsync(un => un.UserId == userInfoProvider.CurrentUserId && un.IsNew);
-        }
-
-        private async Task ValidateInput()
-        {
-            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId))
-                throw new BusinessException("User not found");
+            return UserNotificationRepository
+                .AnyAsync(un => un.UserId == UserInfoProvider.CurrentUserId && un.IsNew);
         }
 
         #endregion Methods

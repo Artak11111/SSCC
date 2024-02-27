@@ -1,4 +1,5 @@
-﻿using ControlCenter.Abstractions;
+﻿using ControlCenter.Contracts.Contracts;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;

@@ -1,19 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30711.63
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.DB", "ControlCenter.DB\ControlCenter.DB.csproj", "{5D1DCD09-CD00-4611-94E9-3D7E307904E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlCenter.DB", "ControlCenter.DB\ControlCenter.DB.csproj", "{5D1DCD09-CD00-4611-94E9-3D7E307904E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Entities", "ControlCenter.Entities\ControlCenter.Entities.csproj", "{495036B0-AE02-4F5A-B325-51B4E0B0D0DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlCenter.Entities", "ControlCenter.Entities\ControlCenter.Entities.csproj", "{495036B0-AE02-4F5A-B325-51B4E0B0D0DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.BL", "ControlCenter.BL\ControlCenter.BL.csproj", "{EC0915E5-A665-4456-B3E4-00B42618935D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlCenter.BL", "ControlCenter.BL\ControlCenter.BL.csproj", "{EC0915E5-A665-4456-B3E4-00B42618935D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Abstractions", "ControlCenter.Abstractions\ControlCenter.Abstractions.csproj", "{C3805045-56E1-4A00-B588-29E1E1188382}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlCenter.Client", "ControlCenter.Client\ControlCenter.Client.csproj", "{5E935E0B-8E24-405B-B3E8-1E93C18DD3FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Client", "ControlCenter.Client\ControlCenter.Client.csproj", "{5E935E0B-8E24-405B-B3E8-1E93C18DD3FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlCenter.Server", "ControlCenter.Server\ControlCenter.Server.csproj", "{76F8CC10-CBCC-4B28-BD22-3074D9695663}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Server", "ControlCenter.Server\ControlCenter.Server.csproj", "{76F8CC10-CBCC-4B28-BD22-3074D9695663}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Contracts", "ControlCenter.Contracts\ControlCenter.Contracts.csproj", "{188F52AB-2167-4B9D-BCB9-C3F32C80316E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCenter.Common", "ControlCenter.Common\ControlCenter.Common.csproj", "{6D4DE42E-66E4-46EF-A000-65A19D0A8769}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +35,6 @@ Global
 		{EC0915E5-A665-4456-B3E4-00B42618935D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0915E5-A665-4456-B3E4-00B42618935D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0915E5-A665-4456-B3E4-00B42618935D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C3805045-56E1-4A00-B588-29E1E1188382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C3805045-56E1-4A00-B588-29E1E1188382}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C3805045-56E1-4A00-B588-29E1E1188382}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C3805045-56E1-4A00-B588-29E1E1188382}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E935E0B-8E24-405B-B3E8-1E93C18DD3FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E935E0B-8E24-405B-B3E8-1E93C18DD3FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E935E0B-8E24-405B-B3E8-1E93C18DD3FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +43,14 @@ Global
 		{76F8CC10-CBCC-4B28-BD22-3074D9695663}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76F8CC10-CBCC-4B28-BD22-3074D9695663}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76F8CC10-CBCC-4B28-BD22-3074D9695663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{188F52AB-2167-4B9D-BCB9-C3F32C80316E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{188F52AB-2167-4B9D-BCB9-C3F32C80316E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{188F52AB-2167-4B9D-BCB9-C3F32C80316E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{188F52AB-2167-4B9D-BCB9-C3F32C80316E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D4DE42E-66E4-46EF-A000-65A19D0A8769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D4DE42E-66E4-46EF-A000-65A19D0A8769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D4DE42E-66E4-46EF-A000-65A19D0A8769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D4DE42E-66E4-46EF-A000-65A19D0A8769}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

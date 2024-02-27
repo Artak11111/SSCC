@@ -1,64 +1,70 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Commands.Notifications;
+﻿using ControlCenter.BL.Commands.Notifications;
 using ControlCenter.BL.Commands.Notifications.Models;
 using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using ControlCenter.Entities.Models;
+using ControlCenter.Contracts.Contracts;
+using ControlCenter.BL.Commands.Users.Models;
+using ControlCenter.BL.Commands.Common;
 
 namespace ControlCenter.BL.Commands.Users
 {
-    public class ChangeDepartmentCommand
+    public class ChangeDepartmentCommand : CommandBase<ChangeDepartmentInputModel>
     {
-        #region Fields
-
-        private readonly IRepository<User> userRepository;
-        private readonly IRepository<Department> departmentRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-        private readonly CreateNotificationCommand createNotificationCommand;
-
-        #endregion Fields
-
         #region Constructor
 
-        public ChangeDepartmentCommand(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<Department> departmentRepository, CreateNotificationCommand createNotificationCommand)
+        public ChangeDepartmentCommand(IUserInfoProvider userInfoProvider,
+            IRepository<User> userRepository, 
+            IRepository<Department> departmentRepository, 
+            CreateNotificationCommand createNotificationCommand)
         {
-            this.userRepository = userRepository;
-            this.departmentRepository = departmentRepository;
-            this.createNotificationCommand = createNotificationCommand;
-            this.userInfoProvider = userInfoProvider;
+            UserRepository = userRepository;
+            DepartmentRepository = departmentRepository;
+            CreateNotificationCommand = createNotificationCommand;
+            UserInfoProvider = userInfoProvider;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IUserInfoProvider UserInfoProvider { get; }
+
+        protected IRepository<User> UserRepository { get; }
+
+        protected IRepository<Department> DepartmentRepository { get; }
+
+        protected CreateNotificationCommand CreateNotificationCommand { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task Execute(Guid id, Guid departmentId)
+        public override async Task ExecuteAsync(ChangeDepartmentInputModel input)
         {
-            // validations
-            await ValidateInput(id, departmentId);
+            await ValidateAsync(input);
 
-            var user = await userRepository
-                .Include(u=>u.Department)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await UserRepository
+                .Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Id == UserInfoProvider.CurrentUserId);
 
             var oldDepartment = user.Department;
-            var newDepartment = await departmentRepository
-                .FirstOrDefaultAsync(d=>d.Id==departmentId);
+            var newDepartment = await DepartmentRepository
+                .FirstOrDefaultAsync(d => d.Id == input.NewDepartmentId);
 
-            user.DepartmentId = departmentId;
+            user.DepartmentId = input.NewDepartmentId;
 
-            await userRepository.SaveChangesAsync();
+            await UserRepository.SaveChangesAsync();
 
             await NotifyManagers(user, oldDepartment, newDepartment);
         }
 
         private async Task NotifyManagers(User user, Department oldDepartment, Department newDepartment)
         {
-            await createNotificationCommand.Execute(new CreateNotificationInputModel
+            await CreateNotificationCommand.ExecuteAsync(new CreateNotificationInputModel
             {
                 DateTime = DateTime.UtcNow,
                 Message = $"Employee {user.Name} was moved from {oldDepartment.Name} to {newDepartment.Name}",
@@ -68,22 +74,23 @@ namespace ControlCenter.BL.Commands.Users
                 // so we can send notification to management department
                 TargetDepartments = new List<Guid>
                 {
-                    userInfoProvider.CurrentDepartmentId
+                    UserInfoProvider.CurrentDepartmentId
                 }
             });
         }
 
-        private async Task ValidateInput(Guid id, Guid departmentId)
+        protected override async Task ValidateAsync(ChangeDepartmentInputModel input)
         {
-            if (id == default) throw new ArgumentNullException(nameof(id));
-            if (departmentId == default) throw new ArgumentNullException(nameof(departmentId));
-            if (id == departmentId) throw new BusinessException("New department must be different");
+            if (input == null) throw new ArgumentNullException(nameof(input));
 
-            if (!await userRepository.AnyAsync(u => u.Id == id))
-                throw new BusinessException($"User not found");
+            if (input.OldDepartmentId == Guid.Empty) throw new ArgumentNullException(nameof(input.OldDepartmentId));
 
-            if (!await departmentRepository.AnyAsync(d => d.Id == userInfoProvider.CurrentDepartmentId && d.Name == "Management"))
-                throw new BusinessException($"Department not found");
+            if (input.NewDepartmentId == Guid.Empty) throw new ArgumentNullException(nameof(input.NewDepartmentId));
+
+            if (input.OldDepartmentId == input.NewDepartmentId) throw new BusinessException("New department must be different");
+
+            if (!await DepartmentRepository.AnyAsync(d => d.Id == UserInfoProvider.CurrentDepartmentId && d.Name == "Management"))
+                throw new BusinessException($"Management department with id {UserInfoProvider.CurrentDepartmentId} not found");
         }
 
         #endregion Methods

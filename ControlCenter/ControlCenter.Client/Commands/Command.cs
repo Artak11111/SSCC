@@ -46,7 +46,7 @@ namespace ControlCenter.Client.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Application error");
+                MessageBox.Show($"Application error. {ex.ToString()}");
             }
         }
     }

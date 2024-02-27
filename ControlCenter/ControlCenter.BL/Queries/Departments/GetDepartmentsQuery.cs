@@ -1,51 +1,38 @@
-﻿using ControlCenter.Abstractions;
-using ControlCenter.BL.Exceptions;
-using ControlCenter.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ControlCenter.BL.Queries.Common;
+using ControlCenter.Entities.Models;
+using ControlCenter.Contracts.Contracts;
 
 namespace ControlCenter.BL.Queries.Departments
 {
-    public class GetDepartmentsQuery
+    public class GetDepartmentsQuery : QueryBase<List<Department>>
     {
-        #region Fields
-
-        private readonly IRepository<Department> departmentRepository;
-        private readonly IRepository<User> userRepository;
-        private readonly IUserInfoProvider userInfoProvider;
-
-        #endregion Fields
-
         #region Constructor
 
-        public GetDepartmentsQuery(IUserInfoProvider userInfoProvider, IRepository<User> userRepository, IRepository<Department> departmentRepository)
+        public GetDepartmentsQuery(IRepository<Department> departmentRepository)
         {
-            this.departmentRepository = departmentRepository;
-            this.userRepository = userRepository;
-            this.userInfoProvider = userInfoProvider;
+            DepartmentRepository = departmentRepository;
         }
 
         #endregion Constructor
 
+        #region Properties
+
+        protected IRepository<Department> DepartmentRepository { get; }
+
+        #endregion Properties
+
         #region Methods
 
-        public async Task<List<Department>> Execute()
+        public override Task<List<Department>> ExecuteAsync()
         {
-            // validations
-            await ValidateInput();
-
-            return await departmentRepository.AsQueryable()
+            return DepartmentRepository.AsQueryable()
                 .OrderBy(d=> d.Name)
                 .AsNoTracking()
                 .ToListAsync();
-        }
-
-        private async Task ValidateInput()
-        {
-            if (!await userRepository.AnyAsync(u => u.Id == userInfoProvider.CurrentUserId))
-                throw new BusinessException("User not found");
         }
 
         #endregion Methods

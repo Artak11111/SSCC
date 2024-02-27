@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Security.Claims;
 
 namespace ControlCenter.BL.Commands.Users.Model
 {
     public class AuthenticateUserResult
     {
+        public string Token { get; set; }
 
         public Guid UserId { get; set; }
 
@@ -15,7 +15,5 @@ namespace ControlCenter.BL.Commands.Users.Model
         public Guid DepartmentId { get; set; }
 
         public string DepartmentName { get; set; }
-
-        public ClaimsIdentity UserIdentity { get; set; }
     }
 }
